@@ -1,0 +1,21 @@
+{
+  "src": [
+    "pages/Index",
+    "pages/Login/Login",
+    "pages/Home/Home",
+    "pages/Work/MyApplyFor/MyApplyFor",
+    "pages/Work/ApplyForDetail/ApplyForDetail",
+    "pages/AddressBook/EmployeeDetail/EmployeeDetail",
+    "pages/Work/LeaveApplication/LeaveApplication",
+    "pages/Work/ClockIn/ClockIn",
+    "pages/Work/SalaryList/SalaryList",
+    "pages/Work/SalaryDetail/SalaryDetail",
+    "pages/My/Setting/Setting",
+    "pages/My/AccountManage/AccountManage",
+    "pages/Work/Notice/Notice",
+    "pages/Work/NoticeDetail/NoticeDetail",
+    "pages/My/ChangePhone/ChangePhone",
+    "pages/My/ChangePhone2/ChangePhone2",
+    "pages/My/ChangePassword/ChangePassword"
+  ]
+}
