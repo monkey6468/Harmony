@@ -1,6 +1,7 @@
 {
   "src": [
     "pages/Index",
-    "pages/Login/Login"
+    "pages/Login/Login",
+    "pages/ForgetPassword/ForgetPassword"
   ]
 }
