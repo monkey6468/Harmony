@@ -1,12 +1,31 @@
+import router from '@ohos.router'
+
 @Entry
 @Component
 struct Index {
-
   @State time: number = 3
+  timer: number = -1
+
+  enter() {
+    router.replaceUrl({
+      url: "pages/Login/Login"
+    })
+  }
+
+  onPageShow() {
+    this.timer = setInterval(() => {
+      this.time--
+      if (this.time <= 0) {
+        // 跳转到登录页面
+        this.enter()
+        clearInterval(this.timer)
+      }
+    }, 1000)
+  }
 
   build() {
-    Stack({alignContent:Alignment.Bottom}){
-      Stack({alignContent:Alignment.TopEnd}){
+    Stack({ alignContent: Alignment.Bottom }) {
+      Stack({ alignContent: Alignment.TopEnd }) {
         Image($rawfile("index/launch-screen.png"))
           .width('100%')
           .height('100%')
@@ -23,8 +42,8 @@ struct Index {
         .borderRadius(25)
         .backgroundColor(Color.White)
         .margin({
-          top:15,
-          right:15
+          top: 15,
+          right: 15
         })
       }
 
@@ -35,6 +54,9 @@ struct Index {
           bottom: 88
         })
         .backgroundColor(Color.Transparent)
+        .onClick(() => {
+          this.enter()
+        })
     }
     .width('100%')
     .height('100%')
