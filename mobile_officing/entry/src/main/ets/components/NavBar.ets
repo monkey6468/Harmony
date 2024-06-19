@@ -11,6 +11,7 @@ export struct NavBar {
         .width(20)
         .height(20)
         .onClick(() => {
+          console.log("----back")
           router.back()
         })
 

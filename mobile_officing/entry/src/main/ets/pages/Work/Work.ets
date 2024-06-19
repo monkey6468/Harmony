@@ -120,6 +120,14 @@ export struct Work {
       Image(image).width(50).height(50)
       Text(text).margin({ top: 10 })
     }.width('25%').margin({ bottom: 20 })
+    .onClick(() => {
+      console.log("---buildAppItem", text)
+      if (text == "流程申请") {
+        router.pushUrl({
+          url: "pages/Work/LeaveApplication/LeaveApplication"
+        })
+      }
+    })
   }
 
   @Builder buildApplyFor() {
@@ -133,7 +141,7 @@ export struct Work {
         Row() {
           Text("更多").fontColor('#7f6666').fontSize(16)
           Image($rawfile("common/arraw_right.png")).width(20).height(20)
-        }.onClick(()=>{
+        }.onClick(() => {
           console.log("----更多----")
           router.pushUrl({
             url: "pages/Work/MyApplyFor/MyApplyFor"

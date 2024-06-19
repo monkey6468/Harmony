@@ -5,6 +5,7 @@
     "pages/ForgetPassword/ForgetPassword",
     "pages/Home/Home",
     "pages/Work/MyApplyFor/MyApplyFor",
-    "pages/Work/ApplyForDetail/ApplyForDetail"
+    "pages/Work/ApplyForDetail/ApplyForDetail",
+    "pages/Work/LeaveApplication/LeaveApplication"
   ]
 }
