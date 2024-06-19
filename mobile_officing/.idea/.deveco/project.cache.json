@@ -2,7 +2,7 @@
 	"BuildOptions":{
 		"BUNDLE_NAME":"com.example.mobile_officing",
 		"BUILD_PATH":{
-			"OUTPUT_PATH":"/Users/autophix/MyWorkSpace/Harmony/mobile_officing/build/outputs/default"
+			"OUTPUT_PATH":"/Users/xiaoweihua/WorkSpace/Harmony/mobile_officing/build/outputs/default"
 		},
 		"SELECT_BUILD_PRODUCT":"default"
 	},

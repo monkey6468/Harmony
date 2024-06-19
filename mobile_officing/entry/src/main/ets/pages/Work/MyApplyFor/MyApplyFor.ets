@@ -65,33 +65,14 @@ struct MyApplyFor {
 
   @Builder buildTopTab() {
     Tabs({ barPosition: BarPosition.Start }) {
-
       ForEach(this.topList, (name: string, index: number) => {
         TabContent() {
           this.buildApplyForItems()
         }.tabBar(this.TabBuilder(index, name))
       })
-      // TabContent() {
-      //   this.buildApplyForItems()
-      // }.tabBar(this.TabBuilder(0, '全部'))
-      //
-      // TabContent() {
-      //   this.buildApplyForItems()
-      // }.tabBar(this.TabBuilder(1, '人事管理'))
-      //
-      // TabContent() {
-      //   this.buildApplyForItems()
-      // }.tabBar(this.TabBuilder(2, '行政事务'))
-      //
-      // TabContent() {
-      //   this.buildApplyForItems()
-      // }.tabBar(this.TabBuilder(3, '财务类'))
-      //
-      // TabContent() {
-      //   this.buildApplyForItems()
-      // }.tabBar(this.TabBuilder(4, '业务相关'))
     }
     .onChange(index => {
+      // 存在 循环 获取数据的问题
       this.currentIndex = index
       this.type_id = index
       this.getProcessListData()

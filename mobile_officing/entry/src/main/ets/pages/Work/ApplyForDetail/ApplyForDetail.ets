@@ -77,7 +77,6 @@ struct ApplyForDetail {
         } else if (this.process.type_id == "2") {
           Text(`结束时间：${this.process.end_time}`)
         }
-
       }
       .height(40)
       .width('100%')
