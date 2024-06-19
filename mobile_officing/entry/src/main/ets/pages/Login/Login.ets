@@ -1,6 +1,7 @@
 import router from '@ohos.router'
 import promptAction from '@ohos.promptAction'
 import { login } from '../../api/User'
+import PreferencesUtil from '../../utils/PreferencesUtil'
 
 @Entry
 @Component
@@ -8,15 +9,8 @@ struct Login {
   @State loginname: string = '17704051019'
   @State password: string = '123456'
 
-  async onLogin(){
-    /*
-登录 API 接口详见接口文档
-登录账号：
-17704051019 123456
-13811112222 123456
-13911111111 123456
-**/
-    console.log("----login----",this.loginname, this.password)
+  async onLogin() {
+    console.log("----login----", this.loginname, this.password)
     // 校验手机号和密码
     const loginNameRegex = /^1[3-9]\d{9}$/
     if (!loginNameRegex.test(this.loginname)) {
@@ -39,11 +33,27 @@ struct Login {
     }
 
     const res = await login({
-      loginname:this.loginname,
-      password:this.password,
+      loginname: this.loginname,
+      password: this.password,
     })
 
-    console.log("---res----",res)
+    console.log("---res----", res)
+
+    promptAction.showToast({
+      message: res.message.toString(),
+      duration: 500,
+      bottom: 100
+    })
+
+    if (this.loginname == "17704051019") {
+      PreferencesUtil.saveToken(this.loginname)
+
+      setTimeout(() => {
+        router.replaceUrl({
+          url: "pages/Home/Home"
+        })
+      }, 500)
+    }
   }
 
   build() {
@@ -62,13 +72,13 @@ struct Login {
             .margin({ left: 10 })
           TextInput({
             placeholder: "请输入账号",
-            text:this.loginname
+            text: this.loginname
           })
             .height("100%")
             .layoutWeight(1)
             .borderRadius(0)
             .backgroundColor(Color.White)
-            .onChange(value=>{
+            .onChange(value => {
               this.loginname = value
             })
         }
@@ -87,15 +97,15 @@ struct Login {
             .margin({ left: 10 })
           TextInput({
             placeholder: "请输入密码",
-            text:this.password
+            text: this.password
           })
             .type(InputType.Password)
             .height("100%")
             .layoutWeight(1)
             .borderRadius(0)
             .backgroundColor(Color.White)
-            .onChange(value=>{
-                this.password = value
+            .onChange(value => {
+              this.password = value
             })
         }
         .borderWidth(1)
@@ -111,9 +121,9 @@ struct Login {
           .height(60)
           .width('85%')
           .margin({ top: 30 })
-        .onClick(()=>{
-          this.onLogin()
-        })
+          .onClick(() => {
+            this.onLogin()
+          })
 
         Row() {
           Text("登录及代表同意")
