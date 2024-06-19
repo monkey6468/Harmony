@@ -6,6 +6,7 @@
     "pages/Home/Home",
     "pages/Work/MyApplyFor/MyApplyFor",
     "pages/Work/ApplyForDetail/ApplyForDetail",
-    "pages/Work/LeaveApplication/LeaveApplication"
+    "pages/Work/LeaveApplication/LeaveApplication",
+    "pages/Work/ClockIn/ClockIn"
   ]
 }

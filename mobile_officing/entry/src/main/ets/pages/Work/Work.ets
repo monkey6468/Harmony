@@ -126,6 +126,10 @@ export struct Work {
         router.pushUrl({
           url: "pages/Work/LeaveApplication/LeaveApplication"
         })
+      } else if (text=="考勤打卡"){
+        router.pushUrl({
+          url: "pages/Work/ClockIn/ClockIn"
+        })
       }
     })
   }
