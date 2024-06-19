@@ -11,6 +11,7 @@ struct MyApplyFor {
   @State page: number = 1
   @State pageSize: number = 10
   @State processList: Process[] = []
+  topList: String[] = ['全部', '人事管理','行政事务','财务类','业务相关']
 
   async getProcessListData() {
     const res = await getProcessList({
@@ -64,26 +65,31 @@ struct MyApplyFor {
 
   @Builder buildTopTab() {
     Tabs({ barPosition: BarPosition.Start }) {
-      
-      TabContent() {
-        this.buildApplyForItems()
-      }.tabBar(this.TabBuilder(0, '全部'))
 
-      TabContent() {
-        this.buildApplyForItems()
-      }.tabBar(this.TabBuilder(1, '人事管理'))
-
-      TabContent() {
-        this.buildApplyForItems()
-      }.tabBar(this.TabBuilder(2, '行政事务'))
-
-      TabContent() {
-        this.buildApplyForItems()
-      }.tabBar(this.TabBuilder(3, '财务类'))
-
-      TabContent() {
-        this.buildApplyForItems()
-      }.tabBar(this.TabBuilder(4, '业务相关'))
+      ForEach(this.topList, (name: string, index: number) => {
+        TabContent() {
+          this.buildApplyForItems()
+        }.tabBar(this.TabBuilder(index, name))
+      })
+      // TabContent() {
+      //   this.buildApplyForItems()
+      // }.tabBar(this.TabBuilder(0, '全部'))
+      //
+      // TabContent() {
+      //   this.buildApplyForItems()
+      // }.tabBar(this.TabBuilder(1, '人事管理'))
+      //
+      // TabContent() {
+      //   this.buildApplyForItems()
+      // }.tabBar(this.TabBuilder(2, '行政事务'))
+      //
+      // TabContent() {
+      //   this.buildApplyForItems()
+      // }.tabBar(this.TabBuilder(3, '财务类'))
+      //
+      // TabContent() {
+      //   this.buildApplyForItems()
+      // }.tabBar(this.TabBuilder(4, '业务相关'))
     }
     .onChange(index => {
       this.currentIndex = index
