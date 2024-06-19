@@ -1,7 +1,7 @@
 import { Process } from '../../types/Process'
 import { getProcessList } from '../../api/Process'
-import { ApplyForItem } from '../components/ApplyForItem'
-import process from '@ohos.process'
+import { ApplyForItem } from '../../components/ApplyForItem'
+import router from '@ohos.router'
 
 @Component
 @Preview
@@ -133,7 +133,12 @@ export struct Work {
         Row() {
           Text("更多").fontColor('#7f6666').fontSize(16)
           Image($rawfile("common/arraw_right.png")).width(20).height(20)
-        }
+        }.onClick(()=>{
+          console.log("----更多----")
+          router.pushUrl({
+            url: "pages/Work/MyApplyFor/MyApplyFor"
+          })
+        })
       }.padding({ left: 10, right: 10 }).justifyContent(FlexAlign.SpaceBetween).height(60).width('100%')
 
       ForEach(this.processList, (process: Process) => {

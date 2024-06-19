@@ -3,6 +3,7 @@
     "pages/Index",
     "pages/Login/Login",
     "pages/ForgetPassword/ForgetPassword",
-    "pages/Home/Home"
+    "pages/Home/Home",
+    "pages/Work/MyApplyFor/MyApplyFor"
   ]
 }

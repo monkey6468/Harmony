@@ -1,9 +1,10 @@
 import router from '@ohos.router'
+
 @Component
-export struct NavBar{
+export struct NavBar {
   @Prop title: string
 
-  build(){
+  build() {
     Row() {
       // 左边的返回
       Image($rawfile("common/back.png"))

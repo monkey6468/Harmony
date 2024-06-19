@@ -1,5 +1,5 @@
 import router from '@ohos.router'
-import { applyForStatus, applyForStatusColor } from "../../utils/ApplyForUtil"
+import { applyForStatus, applyForStatusColor } from '../utils/ApplyForUtil'
 
 @Observed
 class MyProcess {
