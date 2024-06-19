@@ -1,6 +1,22 @@
+import { Process } from '../../types/Process'
+import { getProcessList } from '../../api/Process'
+import { ApplyForItem } from '../components/ApplyForItem'
+import process from '@ohos.process'
+
 @Component
 @Preview
 export struct Work {
+  @State processList: Process[] = []
+
+  async getProcessListData() {
+    const res = await getProcessList({ type_id: 0, page: 1, pageSize: 2 })
+    this.processList = res.data.items
+  }
+
+  aboutToAppear() {
+    this.getProcessListData()
+  }
+
   @Builder buildTop() {
     Row() {
       Text("我的办公").fontSize('30sp').fontColor(Color.White).fontWeight(800)
@@ -120,45 +136,48 @@ export struct Work {
         }
       }.padding({ left: 10, right: 10 }).justifyContent(FlexAlign.SpaceBetween).height(60).width('100%')
 
-      Row() {
-        Row() {
-          Text()
-            .width(20)
-            .height(20)
-            .borderRadius(10)
-            .backgroundColor('#4749a1')
-            .margin({ top: 33 })
-        }.alignItems(VerticalAlign.Top).justifyContent(FlexAlign.Center).height('100%').width(40)
+      ForEach(this.processList, (process: Process) => {
+        ApplyForItem({ process })
+      })
+      // Row() {
+      //   Row() {
+      //     Text()
+      //       .width(20)
+      //       .height(20)
+      //       .borderRadius(10)
+      //       .backgroundColor('#4749a1')
+      //       .margin({ top: 33 })
+      //   }.alignItems(VerticalAlign.Top).justifyContent(FlexAlign.Center).height('100%').width(40)
+      //
+      //   Column() {
+      //     Text("请假申请").fontSize(20).fontWeight(600)
+      //     Text("2024/6/19 至 2024/6/21 共3天")
+      //     Row() {
+      //       Text('申请时间：2024/6/19 15:30')
+      //       Text("待审批").fontColor('#ff935d')
+      //     }.width('100%').justifyContent(FlexAlign.SpaceBetween).padding({ right: 20 })
+      //   }.alignItems(HorizontalAlign.Start).justifyContent(FlexAlign.SpaceEvenly).layoutWeight(1).height(130)
+      // }.width('100%').height(160).borderColor({ top: '#efefef' }).borderWidth({ top: 1 })
 
-        Column() {
-          Text("请假申请").fontSize(20).fontWeight(600)
-          Text("2024/6/19 至 2024/6/21 共3天")
-          Row() {
-            Text('申请时间：2024/6/19 15:30')
-            Text("待审批").fontColor('#ff935d')
-          }.width('100%').justifyContent(FlexAlign.SpaceBetween).padding({ right: 20 })
-        }.alignItems(HorizontalAlign.Start).justifyContent(FlexAlign.SpaceEvenly).layoutWeight(1).height(130)
-      }.width('100%').height(160).borderColor({ top: '#efefef' }).borderWidth({ top: 1 })
-
-      Row() {
-        Row() {
-          Text()
-            .width(20)
-            .height(20)
-            .borderRadius(10)
-            .backgroundColor('#4749a1')
-            .margin({ top: 33 })
-        }.alignItems(VerticalAlign.Top).justifyContent(FlexAlign.Center).height('100%').width(40)
-
-        Column() {
-          Text("请假申请").fontSize(20).fontWeight(600)
-          Text("2024/6/19 至 2024/6/21 共3天")
-          Row() {
-            Text('申请时间：2024/6/19 15:30')
-            Text("正在审批中").fontColor('#53cbae')
-          }.width('100%').justifyContent(FlexAlign.SpaceBetween).padding({ right: 20 })
-        }.alignItems(HorizontalAlign.Start).justifyContent(FlexAlign.SpaceEvenly).layoutWeight(1).height(130)
-      }.width('100%').height(160).borderColor({ top: '#efefef' }).borderWidth({ top: 1 })
+      // Row() {
+      //   Row() {
+      //     Text()
+      //       .width(20)
+      //       .height(20)
+      //       .borderRadius(10)
+      //       .backgroundColor('#4749a1')
+      //       .margin({ top: 33 })
+      //   }.alignItems(VerticalAlign.Top).justifyContent(FlexAlign.Center).height('100%').width(40)
+      //
+      //   Column() {
+      //     Text("请假申请").fontSize(20).fontWeight(600)
+      //     Text("2024/6/19 至 2024/6/21 共3天")
+      //     Row() {
+      //       Text('申请时间：2024/6/19 15:30')
+      //       Text("正在审批中").fontColor('#53cbae')
+      //     }.width('100%').justifyContent(FlexAlign.SpaceBetween).padding({ right: 20 })
+      //   }.alignItems(HorizontalAlign.Start).justifyContent(FlexAlign.SpaceEvenly).layoutWeight(1).height(130)
+      // }.width('100%').height(160).borderColor({ top: '#efefef' }).borderWidth({ top: 1 })
     }.margin({ top: -65, bottom: 15 }).width('94%').backgroundColor(Color.White).borderRadius(10)
   }
 
