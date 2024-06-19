@@ -11,6 +11,22 @@
     {
       "name": "EntryAbility_label",
       "value": "mobile office"
+    },
+    {
+      "name": "work",
+      "value": "办公"
+    },
+    {
+      "name": "message",
+      "value": "消息"
+    },
+    {
+      "name": "address_book",
+      "value": "通讯录"
+    },
+    {
+      "name": "my",
+      "value": "我的"
     }
   ]
 }

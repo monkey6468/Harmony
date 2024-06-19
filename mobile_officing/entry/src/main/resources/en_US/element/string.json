@@ -11,6 +11,22 @@
     {
       "name": "EntryAbility_label",
       "value": "mobile office"
+    },
+    {
+      "name": "work",
+      "value": "Work"
+    },
+    {
+      "name": "message",
+      "value": "Message"
+    },
+    {
+      "name": "address_book",
+      "value": "AddressBook"
+    },
+    {
+      "name": "my",
+      "value": "My"
     }
   ]
 }
