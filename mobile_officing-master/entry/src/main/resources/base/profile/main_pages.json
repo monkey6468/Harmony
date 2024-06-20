@@ -16,6 +16,7 @@
     "pages/Work/NoticeDetail/NoticeDetail",
     "pages/My/ChangePhone/ChangePhone",
     "pages/My/ChangePhone2/ChangePhone2",
-    "pages/My/ChangePassword/ChangePassword"
+    "pages/My/ChangePassword/ChangePassword",
+    "pages/Message/Chat/Chat"
   ]
 }
