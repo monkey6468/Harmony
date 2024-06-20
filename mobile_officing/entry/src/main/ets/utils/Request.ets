@@ -24,7 +24,7 @@ export const request = <T>({
         // 当该请求使用完毕时，调用destroy方法主动销毁
         httpRequest.destroy() // data.result为HTTP响应内容，可根据业务需要进行解析
         console.log("----url:",`${BASEURL}${url}`)
-        console.log("----response:",data)
+        console.log("----response:",JSON.stringify(data.result as ApiRes<T>))
         resolve(data.result as ApiRes<T>)
       } else {
         console.info('-----error:' + JSON.stringify(err))
