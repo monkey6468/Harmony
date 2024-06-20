@@ -1,7 +1,7 @@
 import http from '@ohos.net.http'
 import { ApiRes } from '../types/Data'
 
-const BASEURL = 'https://huangjiangjun.top:3002/api/mobile_officing/'
+export const BASEURL = 'https://huangjiangjun.top:3002/api/mobile_officing/'
 
 export const request = <T>({
                              url ='',
