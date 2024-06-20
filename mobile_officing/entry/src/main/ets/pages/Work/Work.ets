@@ -134,6 +134,10 @@ export struct Work {
         router.pushUrl({
           url: "pages/Work/SalaryList/SalaryList"
         })
+      } else if (text == "公司公告") {
+        router.pushUrl({
+          url: "pages/Work/Notice/Notice"
+        })
       }
     })
   }
