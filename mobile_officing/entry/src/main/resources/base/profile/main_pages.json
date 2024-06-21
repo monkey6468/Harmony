@@ -11,6 +11,7 @@
     "pages/Work/SalaryList/SalaryList",
     "pages/Work/SalaryDetail/SalaryDetail",
     "pages/Work/Notice/Notice",
-    "pages/Work/NoticeDetail/NoticeDetail"
+    "pages/Work/NoticeDetail/NoticeDetail",
+    "pages/Message/Chat/Chat"
   ]
 }
