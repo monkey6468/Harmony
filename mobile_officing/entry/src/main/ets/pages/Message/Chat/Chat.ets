@@ -100,7 +100,6 @@ struct Chat {
         message: "消息内容不能为空",
         duration: 800
       })
-
       return
     }
 
@@ -115,7 +114,7 @@ struct Chat {
       status: 1,
       type: "private",
       avatar: "https://img2.baidu.com/it/u=1477138556,2382360194&fm=253&fmt=auto&app=138&f=JPEG?w=400&h=400",
-      nickname: "张三",
+      nickname: "王文元",
       created_at: new Date(),
     }
 
@@ -192,6 +191,9 @@ struct Chat {
         })
           .onClick(() => {
             this.textFocusable = true
+            setTimeout(() => {
+              this.listScroller.scrollToIndex(this.messageList.length - 1)
+            }, 200)
           })
           .focusable(this.textFocusable)
           .focusOnTouch(true)
