@@ -31,8 +31,14 @@ export const uploadFile = (mimeType = picker.PhotoViewMIMETypes.IMAGE_TYPE, maxS
             url: 'https://huangjiangjun.top:3002/admin/file/chats/upload',
             header: { key1: 'value1', key2: 'value2' },
             method: 'POST',
-            files: [{ filename: `/${dateStr}.png`, name: 'file', uri: uploadFileUri, type: 'png' }],
-            data: [{ name: 'name', value: 'value' }]
+            files: [{
+              filename: `/${dateStr}.png`,
+              name: 'file',
+              uri: uploadFileUri,
+              type: 'png' }],
+            data: [{
+              name: 'name',
+              value: 'value' }]
           }
 
           // 将本地应用文件上传至网络服务器
@@ -58,9 +64,7 @@ export const uploadFile = (mimeType = picker.PhotoViewMIMETypes.IMAGE_TYPE, maxS
       });
 
     } catch (err) {
-
+      console.error('PhotoViewPicker open failed with err: ' + err);
     }
-
-
   })
 }
