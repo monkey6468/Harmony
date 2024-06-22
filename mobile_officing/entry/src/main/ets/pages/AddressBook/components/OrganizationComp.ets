@@ -20,7 +20,7 @@ export struct OrganizationComp {
         .size({ width: this.organization.expand ? 25 : 30, height: this.organization.expand ? 25 : 30 })
         .onClick(() => {
           this.organization.expand = !this.organization.expand
-        })
+        }) 
     }
     .padding(20)
     .alignItems(VerticalAlign.Center)

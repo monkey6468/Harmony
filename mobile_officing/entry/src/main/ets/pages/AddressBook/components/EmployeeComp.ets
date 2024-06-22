@@ -27,6 +27,7 @@ export struct EmployeeComp {
     .width('100%')
     .height(80)
     .onClick(() => {
+      console.log("-----employee", JSON.stringify(employee))
       router.pushUrl({
         url: "pages/AddressBook/EmployeeDetail/EmployeeDetail",
         params: employee

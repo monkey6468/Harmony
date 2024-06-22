@@ -94,6 +94,7 @@ export struct AddressBook {
     .backgroundColor(Color.White)
     .borderRadius(10)
     .onClick(() => {
+      console.log("-----employee", JSON.stringify(employee))
       router.pushUrl({
         url: "pages/AddressBook/EmployeeDetail/EmployeeDetail",
         params: employee
