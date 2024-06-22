@@ -13,6 +13,7 @@
     "pages/Work/Notice/Notice",
     "pages/Work/NoticeDetail/NoticeDetail",
     "pages/Message/Chat/Chat",
-    "pages/AddressBook/EmployeeDetail/EmployeeDetail"
+    "pages/AddressBook/EmployeeDetail/EmployeeDetail",
+    "pages/My/Setting/Setting"
   ]
 }
