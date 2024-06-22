@@ -1,5 +1,6 @@
 import http from '@ohos.net.http'
 import { ApiRes } from '../types/Data'
+import PreferencesUtil from './PreferencesUtil'
 
 export const BASEURL = 'https://huangjiangjun.top:3002/api/mobile_officing/'
 
@@ -12,7 +13,12 @@ export const request = <T>({
   // 每一个httpRequest对应一个HTTP请求任务，不可复用
   let httpRequest = http.createHttp()
 
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
+
+    const token = await PreferencesUtil.getToken()
+    if (token) {
+      header["token"] = token
+    }
 
     httpRequest.request( // 填写HTTP请求的URL地址，可以带参数也可以不带参数。URL地址需要开发者自定义。请求的参数可以在extraData中指定
       `${BASEURL}${url}`, { method, // 可选，默认为http.RequestMethod.GET
