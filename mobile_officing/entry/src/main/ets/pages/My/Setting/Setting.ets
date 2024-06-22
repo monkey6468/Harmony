@@ -41,6 +41,7 @@ struct Setting {
         .height(30)
     }
     .onClick(() => {
+      console.log("----AccountManage")
       router.pushUrl({
         url: "pages/My/AccountManage/AccountManage"
       })

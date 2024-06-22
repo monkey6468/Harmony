@@ -14,6 +14,8 @@
     "pages/Work/NoticeDetail/NoticeDetail",
     "pages/Message/Chat/Chat",
     "pages/AddressBook/EmployeeDetail/EmployeeDetail",
-    "pages/My/Setting/Setting"
+    "pages/My/Setting/Setting",
+    "pages/My/AccountManage/AccountManage",
+    "pages/My/ChangePhone/ChangePhone"
   ]
 }
