@@ -17,6 +17,7 @@
     "pages/My/Setting/Setting",
     "pages/My/AccountManage/AccountManage",
     "pages/My/ChangePhone/ChangePhone",
-    "pages/My/ChangePhone2/ChangePhone2"
+    "pages/My/ChangePhone2/ChangePhone2",
+    "pages/My/ChangePassword/ChangePassword"
   ]
 }

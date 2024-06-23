@@ -45,13 +45,15 @@ struct AccountManage {
               .height(28)
           }
           .onClick(() => {
+            console.log("----ChangePassword1")
             router.pushUrl({
-              url: 'pages/My/ChangePassword/ChangePassword'
+              url: "pages/My/ChangePassword/ChangePassword"
             })
           })
           .width('100%')
           .justifyContent(FlexAlign.SpaceBetween)
           .onClick(() => {
+            console.log("----ChangePassword2")
             router.pushUrl({
               url: "pages/My/ChangePassword/ChangePassword"
             })
