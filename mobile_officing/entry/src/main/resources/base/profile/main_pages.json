@@ -16,6 +16,7 @@
     "pages/AddressBook/EmployeeDetail/EmployeeDetail",
     "pages/My/Setting/Setting",
     "pages/My/AccountManage/AccountManage",
-    "pages/My/ChangePhone/ChangePhone"
+    "pages/My/ChangePhone/ChangePhone",
+    "pages/My/ChangePhone2/ChangePhone2"
   ]
 }

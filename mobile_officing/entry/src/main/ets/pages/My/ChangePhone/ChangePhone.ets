@@ -80,7 +80,7 @@ struct ChangePhone {
               })
               return
             }
-
+            console.log("----更新手机号")
             router.pushUrl({
               url: "pages/My/ChangePhone2/ChangePhone2",
               params: {
