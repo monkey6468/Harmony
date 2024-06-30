@@ -1,0 +1,41 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "/Users/xiaoweihua/.ohos/config/auto_debug_BLEDemo_com.example.bledemo_260086000074974821.cer",
+          "storePassword": "0000001B3C678786F84A3A327B333C59514A92D46A2FB63010B32D81B8747127FA83726AD5263ACB5C10F7",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001B1F6E4A1A879B09A9E77F4487FC26985059B2A2DC6D192C5ED26C628F54F8386C1536DA7034095A",
+          "profile": "/Users/xiaoweihua/.ohos/config/auto_debug_BLEDemo_com.example.bledemo_260086000074974821.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "/Users/xiaoweihua/.ohos/config/auto_debug_BLEDemo_com.example.bledemo_260086000074974821.p12"
+        }
+      }
+    ],
+    "compileSdkVersion": 9,
+    "compatibleSdkVersion": 9,
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}

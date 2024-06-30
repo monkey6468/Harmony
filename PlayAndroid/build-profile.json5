@@ -1,0 +1,41 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "/Users/xiaoweihua/.ohos/config/auto_debug_PlayAndroid_top.wangchenyan.wanharmony_260086000074974821.cer",
+          "storePassword": "0000001BC9DBAB88BEBDAF5806F4EBB0899D5EE5EB1B38B0FD51D2E44380F6E087E9C7F35127449CAFCE17",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001B59246D226C258765032E4641FA1863546C6A7DA2E92043B04A7322E4F398F4B25C294DCA669251",
+          "profile": "/Users/xiaoweihua/.ohos/config/auto_debug_PlayAndroid_top.wangchenyan.wanharmony_260086000074974821.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "/Users/xiaoweihua/.ohos/config/auto_debug_PlayAndroid_top.wangchenyan.wanharmony_260086000074974821.p12"
+        }
+      }
+    ],
+    "compileSdkVersion": 9,
+    "compatibleSdkVersion": 9,
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}

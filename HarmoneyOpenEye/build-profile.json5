@@ -1,0 +1,41 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "/Users/xiaoweihua/.ohos/config/auto_debug_HarmoneyOpenEye_com.winwang.harmonyOpenEye_260086000074974821.cer",
+          "storePassword": "0000001B5949CD81F22AEDE04281411DF9963E65D791E179B6C157EEB15D03699069BF956EDD65883CFD59",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001BEA5AAA3A8D3E9812C817B9EC7404927A2F7EEFBF4E8301BEA274FC4C6074F3F88EA1277BBD0D37",
+          "profile": "/Users/xiaoweihua/.ohos/config/auto_debug_HarmoneyOpenEye_com.winwang.harmonyOpenEye_260086000074974821.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "/Users/xiaoweihua/.ohos/config/auto_debug_HarmoneyOpenEye_com.winwang.harmonyOpenEye_260086000074974821.p12"
+        }
+      }
+    ],
+    "compileSdkVersion": 9,
+    "compatibleSdkVersion": 9,
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}

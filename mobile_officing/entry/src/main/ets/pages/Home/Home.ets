@@ -48,6 +48,8 @@ struct Home {
 
   build() {
     Column() {
+      Text()
+      .decoration(TextDecorationType.)
       Tabs({ barPosition: BarPosition.End }) {
         ForEach(this.tabBarItems, (items: TabBarItem, index: number) => {
           TabContent() {
