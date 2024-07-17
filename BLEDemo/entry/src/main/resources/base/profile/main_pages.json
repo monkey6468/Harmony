@@ -1,5 +1,8 @@
 {
   "src": [
-    "pages/Main"
+    "pages/Index",
+    "pages/ServiceListPage",
+    "pages/CharacteristicListPage",
+    "pages/CharacteristicOperationPage"
   ]
 }

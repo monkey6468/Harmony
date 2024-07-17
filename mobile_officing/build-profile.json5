@@ -1,6 +1,20 @@
 {
   "app": {
-    "signingConfigs": [],
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "/Users/autophix/.ohos/config/auto_debug_mobile_officing_com.example.mobile_officing_260086000074974821.cer",
+          "storePassword": "0000001A8AA94C4195EEB40F9E9D85B31F59F5423B9F6EDFF26A5064C79B7AB9FD87CBA1EB1802893E3A",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001AE8CEDAEF4CBC78A45FD2C78C38B7F3EC2EAAFFFA2666CE3648B6C4460984590E044DB0528A1B",
+          "profile": "/Users/autophix/.ohos/config/auto_debug_mobile_officing_com.example.mobile_officing_260086000074974821.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "/Users/autophix/.ohos/config/auto_debug_mobile_officing_com.example.mobile_officing_260086000074974821.p12"
+        }
+      }
+    ],
     "compileSdkVersion": 9,
     "compatibleSdkVersion": 9,
     "products": [

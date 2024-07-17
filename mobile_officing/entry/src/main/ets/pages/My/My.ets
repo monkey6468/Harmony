@@ -172,7 +172,7 @@ export struct My {
 }
 
 @Component
-struct ArrowCell{
+struct ArrowCell {
   icon: ResourceStr
   title: string
 
