@@ -13,19 +13,21 @@
  * limitations under the License.
  */
 
-import router from '@ohos.router'
+import router from '@ohos.router';
 
 import geolocation from '@ohos.geolocation';
 import prompt from '@system.prompt';
 
-import { BleManager } from '@ohos/fastble'
-import { BleException } from '@ohos/fastble'
-import { BleDevice } from '@ohos/fastble'
-import { BleScanCallback } from '@ohos/fastble';
-import { BleGattCallback } from '@ohos/fastble';
-import { BleScanRuleConfig } from '@ohos/fastble'
-import { ArrayHelper, PermissionHelper } from './Utils'
-import ProgressDialog from './ProgressDialog'
+import {
+  BleDevice,
+  BleException,
+  BleGattCallback,
+  BleManager,
+  BleScanCallback,
+  BleScanRuleConfig
+} from '@ohos/fastble';
+import { ArrayHelper, PermissionHelper } from './Utils';
+import ProgressDialog from './ProgressDialog';
 import { GlobalContext } from './GlobalContext';
 import { Permissions } from '@ohos.abilityAccessCtrl';
 import ble from '@ohos.bluetooth.ble';
@@ -35,9 +37,6 @@ import access from '@ohos.bluetooth.access';
 @Preview
 @Component
 struct Page {
-  @State private edit_text_name_hint: string = '';
-  @State private edit_text_mac_hint: string = '';
-  @State private edit_text_uuid_hint: string = '';
   @State edit_text_uuid: string = '';
   @State edit_text_name: string = '';
   @State edit_text_mac: string = '';
@@ -47,38 +46,18 @@ struct Page {
   @State btn_scan_text: Resource = $r('app.string.start_scan');
   @State is_loading: boolean = false;
   @State loading_rotate: number = 0;
+  @State bleDeviceList: BleDevice[] = [];
+  @State connectedDevices: string[] = [];
+  @State private edit_text_name_hint: string = '';
+  @State private edit_text_mac_hint: string = '';
+  @State private edit_text_uuid_hint: string = '';
   @State private toast_open_bluetooth: string = '';
   @State private toast_connect_fail: string = '';
   @State private toast_disconnected: string = '';
   @State private toast_active_disconnected: string = '';
-  @State bleDeviceList: BleDevice[] = [];
-  @State connectedDevices: string[] = [];
-
-  private loadStrings() {
-    let manager = (GlobalContext.getContext().getValue('context') as Context).resourceManager;
-
-    manager.getString($r('app.string.setting_name').id).then(text => {
-      this.edit_text_name_hint = text;
-    })
-    manager.getString($r('app.string.setting_mac').id).then(text => {
-      this.edit_text_mac_hint = text;
-    })
-    manager.getString($r('app.string.setting_uuid').id).then(text => {
-      this.edit_text_uuid_hint = text;
-    })
-    manager.getString($r('app.string.please_open_blue').id).then(text => {
-      this.toast_open_bluetooth = text;
-    })
-    manager.getString($r('app.string.connect_fail').id).then(text => {
-      this.toast_connect_fail = text;
-    })
-    manager.getString($r('app.string.disconnected').id).then(text => {
-      this.toast_disconnected = text;
-    })
-    manager.getString($r('app.string.active_disconnected').id).then(text => {
-      this.toast_active_disconnected = text;
-    })
-  }
+  private progressDialogCtrl: CustomDialogController = new CustomDialogController({
+    builder: ProgressDialog()
+  });
 
   build() {
     Column() {
@@ -151,9 +130,71 @@ struct Page {
       .margin({ top: 10 })
       .padding({ left: 5, right: 5 })
       .divider({ strokeWidth: 0.5, color: '#aaa' })
+    }.width('100%').height('100%')
+  }
+
+  public clearConnectedDevice() {
+    for (let i = 0; i < this.bleDeviceList.length; i++) {
+      let device: BleDevice = this.bleDeviceList[i];
+      if (BleManager.getInstance().isConnected(device)) {
+        ArrayHelper.removeIndex(this.bleDeviceList, i);
+      }
     }
-    .width('100%')
-    .height('100%')
+  }
+
+  public clearScanDevice() {
+    for (let i = 0; i < this.bleDeviceList.length; i++) {
+      let device: BleDevice = this.bleDeviceList[i];
+      if (!BleManager.getInstance().isConnected(device)) {
+        ArrayHelper.removeIndex(this.bleDeviceList, i);
+      }
+    }
+  }
+
+  public clear() {
+    this.bleDeviceList = [];
+  }
+
+  aboutToAppear() {
+    BleManager.getInstance().init();
+    BleManager.getInstance()
+      .enableLog(true)
+      .setReConnectCount(1, 5000)
+      .setConnectOverTime(20000)
+      .setOperateTimeout(5000);
+
+    this.loadStrings();
+  }
+
+  aboutToDisappear() {
+    BleManager.getInstance().disconnectAllDevice();
+    BleManager.getInstance().destroy();
+  }
+
+  private loadStrings() {
+    let manager = (GlobalContext.getContext().getValue('context') as Context).resourceManager;
+
+    manager.getString($r('app.string.setting_name').id).then(text => {
+      this.edit_text_name_hint = text;
+    })
+    manager.getString($r('app.string.setting_mac').id).then(text => {
+      this.edit_text_mac_hint = text;
+    })
+    manager.getString($r('app.string.setting_uuid').id).then(text => {
+      this.edit_text_uuid_hint = text;
+    })
+    manager.getString($r('app.string.please_open_blue').id).then(text => {
+      this.toast_open_bluetooth = text;
+    })
+    manager.getString($r('app.string.connect_fail').id).then(text => {
+      this.toast_connect_fail = text;
+    })
+    manager.getString($r('app.string.disconnected').id).then(text => {
+      this.toast_disconnected = text;
+    })
+    manager.getString($r('app.string.active_disconnected').id).then(text => {
+      this.toast_active_disconnected = text;
+    })
   }
 
   private isConnected(device: BleDevice): boolean {
@@ -196,8 +237,7 @@ struct Page {
   private onDetailClick(device: BleDevice) {
     console.info("onDetailClick deviceName:" + device.getName());
     router.push({
-      url: 'pages/ServiceListPage',
-      params: { device: device }
+      url: 'pages/ServiceListPage', params: { device: device }
     });
   }
 
@@ -206,13 +246,9 @@ struct Page {
   }
 
   private checkPermissions(): void {
-    let permissions: Permissions[] = [
-      "ohos.permission.USE_BLUETOOTH",
-      "ohos.permission.DISCOVER_BLUETOOTH",
-      "ohos.permission.APPROXIMATELY_LOCATION",
-      "ohos.permission.LOCATION",
-      "ohos.permission.ACCESS_BLUETOOTH"
-    ];
+    let permissions: Permissions[] =
+      ["ohos.permission.USE_BLUETOOTH", "ohos.permission.DISCOVER_BLUETOOTH", "ohos.permission.APPROXIMATELY_LOCATION",
+        "ohos.permission.LOCATION", "ohos.permission.ACCESS_BLUETOOTH"];
     PermissionHelper.requestPermissions(permissions, results => {
       for (let i = 0; i < permissions.length; i++) {
         if (results[i] != 0) {
@@ -249,11 +285,8 @@ struct Page {
         this.doScan();
       } else {
         AlertDialog.show({
-          title: $r('app.string.notifyTitle'),
-          message: $r('app.string.gpsNotifyMsg'),
-          confirm: {
-            value: $r('app.string.ok'),
-            action: () => {
+          title: $r('app.string.notifyTitle'), message: $r('app.string.gpsNotifyMsg'), confirm: {
+            value: $r('app.string.ok'), action: () => {
             }
           }
         })
@@ -300,8 +333,7 @@ struct Page {
 
     let isAutoConnect: boolean = this.switch_auto_connect;
 
-    let scanRuleConfig: BleScanRuleConfig = BleScanRuleConfig.Builder
-      .setServiceUuids(serviceUuids)// 只扫描指定的服务的设备，可选
+    let scanRuleConfig: BleScanRuleConfig = BleScanRuleConfig.Builder.setServiceUuids(serviceUuids)// 只扫描指定的服务的设备，可选
       .setDeviceName(true, names)// 只扫描指定广播名的设备，可选
       .setDeviceMac(mac)// 只扫描指定mac的设备，可选
       .setAutoConnect(isAutoConnect)// 连接时的autoConnect参数，可选，默认false
@@ -309,28 +341,6 @@ struct Page {
       .build();
 
     BleManager.getInstance().initScanRule(scanRuleConfig);
-  }
-
-  public clearConnectedDevice() {
-    for (let i = 0; i < this.bleDeviceList.length; i++) {
-      let device: BleDevice = this.bleDeviceList[i];
-      if (BleManager.getInstance().isConnected(device)) {
-        ArrayHelper.removeIndex(this.bleDeviceList, i);
-      }
-    }
-  }
-
-  public clearScanDevice() {
-    for (let i = 0; i < this.bleDeviceList.length; i++) {
-      let device: BleDevice = this.bleDeviceList[i];
-      if (!BleManager.getInstance().isConnected(device)) {
-        ArrayHelper.removeIndex(this.bleDeviceList, i);
-      }
-    }
-  }
-
-  public clear() {
-    this.bleDeviceList = [];
   }
 
   private startScan(): void {
@@ -371,10 +381,6 @@ struct Page {
     BleManager.getInstance().scan(new TempBleScanCallback());
   }
 
-  private progressDialogCtrl: CustomDialogController = new CustomDialogController({
-    builder: ProgressDialog()
-  });
-
   private connect(bleDevice: BleDevice): void {
     let _this = this;
 
@@ -394,7 +400,8 @@ struct Page {
         ArrayHelper.add(_this.connectedDevices, bleDevice.getMac());
       }
 
-      public onDisConnected(isActiveDisConnected: boolean, device: BleDevice, gatt: ble.GattClientDevice, status: number): void {
+      public onDisConnected(isActiveDisConnected: boolean, device: BleDevice, gatt: ble.GattClientDevice,
+        status: number): void {
 
         _this.progressDialogCtrl.close();
         _this.connectedDevices = BleManager.getInstance().getAllConnectedDevice();
@@ -408,22 +415,6 @@ struct Page {
     }
 
     BleManager.getInstance().connect(bleDevice, new IndexBleGattCallback());
-  }
-
-  aboutToAppear() {
-    BleManager.getInstance().init();
-    BleManager.getInstance()
-      .enableLog(true)
-      .setReConnectCount(1, 5000)
-      .setConnectOverTime(20000)
-      .setOperateTimeout(5000);
-
-    this.loadStrings();
-  }
-
-  aboutToDisappear() {
-    BleManager.getInstance().disconnectAllDevice();
-    BleManager.getInstance().destroy();
   }
 }
 
