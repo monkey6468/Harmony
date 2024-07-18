@@ -1,0 +1,45 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "/Users/autophix/.ohos/config/default_legado_beta_LrwknxtPs0L9CCHXyZLuwnDwbx9QNIr2qWYFqmCGpxo=.cer",
+          "storePassword": "0000001AB2FE1EDDD1034250753F9B45B21B7DED61AA943385A465B5DB8BDC14AC31CAD4B1C4F02485D9",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001A525B73FA313B8DEB5BD71BAECC050F4BA315B483155F7F843084E2677AD2D8294450070993BB",
+          "profile": "/Users/autophix/.ohos/config/default_legado_beta_LrwknxtPs0L9CCHXyZLuwnDwbx9QNIr2qWYFqmCGpxo=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "/Users/autophix/.ohos/config/default_legado_beta_LrwknxtPs0L9CCHXyZLuwnDwbx9QNIr2qWYFqmCGpxo=.p12"
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "compatibleSdkVersion": "5.0.0(12)",
+        "runtimeOS": "HarmonyOS",
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "colorLibrary",
+      "srcPath": "./commons/colorLibrary",
+    }
+  ]
+}
