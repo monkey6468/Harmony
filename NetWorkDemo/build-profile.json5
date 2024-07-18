@@ -1,0 +1,49 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "/Users/autophix/.ohos/config/default_NetWorkDemo_RF1LaTe60buoRuQlAt9NOgd0K2qgZ0Jg68KDTmq-nNU=.cer",
+          "storePassword": "0000001A4C27A9B151993058B0C00ACB6A0FFB87785D160AFBF1CC09D1F95B50CC92717AFFCC9B99AE4C",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001ABE6A7ED8A4CD4B002D017C8783B3A270A9F76C19B01740FC66A8FE3521352499F0FFEC91D381",
+          "profile": "/Users/autophix/.ohos/config/default_NetWorkDemo_RF1LaTe60buoRuQlAt9NOgd0K2qgZ0Jg68KDTmq-nNU=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "/Users/autophix/.ohos/config/default_NetWorkDemo_RF1LaTe60buoRuQlAt9NOgd0K2qgZ0Jg68KDTmq-nNU=.p12"
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "compatibleSdkVersion": "5.0.0(12)",
+        "runtimeOS": "HarmonyOS",
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug",
+      },
+      {
+        "name": "release"
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}
