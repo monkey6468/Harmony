@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from '@ohos/axios';
 import { OilPrice, OilPriceModel } from '../model/OilPriceModel';
 import { NetWorkManger } from '../utils/NetWorkManger';
 import { OilList } from '../view/OilList';
@@ -6,32 +5,18 @@ import { OilList } from '../view/OilList';
 @Entry
 @Component
 struct Index {
-  url: string = "https://api.oioweb.cn/api/common/GasolinePriceQuery"
-  //"http://47.112.25.203:8061/home/Getyj?city=changsha"
-
   @State oils: OilPrice[] = []
   @State oilModel: OilPriceModel = new OilPriceModel()
 
-  // 支持async/await用法
-  async getDataList() {
-    try {
-      const response: AxiosResponse = await axios.get<string, AxiosResponse<OilPriceModel>, null>(this.url);
-      let retModel: OilPriceModel = response.data
-      this.oilModel = retModel
-      this.oils = retModel.result
-      console.log("NetWorkManger2:", JSON.stringify(response.data))
-    } catch (error) {
-      console.error(JSON.stringify(error))
-    }
-  }
-
   async getResult() {
-    let res = await NetWorkManger.requsetCmd()
-    console.log("NetWorkManger1:", res.code)
+    let response = await NetWorkManger.requsetCmd()
+    let retModel = response as OilPriceModel
+    this.oilModel = retModel
+    this.oils = retModel.result
+    console.log("NetWorkManger:", response.msg)
   }
 
   aboutToAppear(): void {
-    this.getDataList()
     this.getResult()
   }
 
