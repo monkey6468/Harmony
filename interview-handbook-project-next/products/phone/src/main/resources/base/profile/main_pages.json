@@ -1,0 +1,17 @@
+{
+  "src": [
+    "pages/Index",
+    "pages/ProjectDetailPage",
+    "pages/InterviewDetailPage",
+    "pages/QuestionDetailPage",
+    "pages/LoginPage",
+    "pages/ClockedPage",
+    "pages/StudyTimePage",
+    "pages/WordPage",
+    "pages/SettingsPage",
+    "pages/ProfileEditPage",
+    "pages/SearchPage",
+    "pages/BootPage",
+    "pages/OptionalPage"
+  ]
+}

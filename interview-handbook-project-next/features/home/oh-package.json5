@@ -1,0 +1,12 @@
+{
+  "name": "@itcast/home",
+  "version": "1.0.0",
+  "description": "Please describe the basic information.",
+  "main": "Index.ets",
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@itcast/basic": "file:../../commons/basic",
+    "@itcast/interview": "file:../../features/interview",
+  }
+}
