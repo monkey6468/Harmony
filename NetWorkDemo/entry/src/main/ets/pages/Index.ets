@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from '@ohos/axios';
 import { OilPrice, OilPriceModel } from '../model/OilPriceModel';
+import { NetWorkManger } from '../utils/NetWorkManger';
 import { OilList } from '../view/OilList';
 
 @Entry
@@ -18,14 +19,20 @@ struct Index {
       let retModel: OilPriceModel = response.data
       this.oilModel = retModel
       this.oils = retModel.result
-      console.log("monkey:", JSON.stringify(this.oils))
+      console.log("NetWorkManger2:", JSON.stringify(response.data))
     } catch (error) {
       console.error(JSON.stringify(error))
     }
   }
 
+  async getResult() {
+    let res = await NetWorkManger.requsetCmd()
+    console.log("NetWorkManger1:", res.code)
+  }
+
   aboutToAppear(): void {
     this.getDataList()
+    this.getResult()
   }
 
   build() {
@@ -35,8 +42,7 @@ struct Index {
         .width('100%')
         .height('5%')
         .textAlign(TextAlign.Center)
-      Text(this.oilModel.msg)
-        .width('100%')
+      Text(this.oilModel.msg).width('100%')
       List() {
         ListItemGroup() {
           ForEach(this.oils, (item: OilPrice, index: number) => {
@@ -44,17 +50,12 @@ struct Index {
               OilList({ item })
             }
           })
-        }
-        .divider({
-          strokeWidth: 1,
-          color: "#f5f5f5"
+        }.divider({
+          strokeWidth: 1, color: "#f5f5f5"
         })
-      }.width('100%')
-      .layoutWeight(1)
-    }.width('90%')
-    .padding({
-      left:"10%"
-    })
-    .height('100%')
+      }.width('100%').layoutWeight(1)
+    }.width('90%').padding({
+      left: "10%"
+    }).height('100%')
   }
 }
