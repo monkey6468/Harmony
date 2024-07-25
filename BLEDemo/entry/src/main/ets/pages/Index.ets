@@ -14,8 +14,6 @@
  */
 
 import router from '@ohos.router';
-
-import geolocation from '@ohos.geolocation';
 import prompt from '@system.prompt';
 
 import {
@@ -24,7 +22,6 @@ import {
   BleGattCallback,
   BleManager,
   BleScanCallback,
-  BleScanRuleConfig
 } from '@ohos/fastble';
 import { ArrayHelper, PermissionHelper } from './Utils';
 import ProgressDialog from './ProgressDialog';
