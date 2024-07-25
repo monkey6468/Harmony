@@ -52,18 +52,13 @@ abstract class BleScanPresenter {
 
   private handleResult(bleDevice: BleDevice): void {
     this.onLeScan(bleDevice);
-    let gattClient = ble.createGattClientDevice(bleDevice.getMac());
-    let that = this
-    gattClient.getDeviceName((err, data) => {
-      bleDevice.setName(data);
-      that.checkDevice(bleDevice);
-    })
+    this.checkDevice(bleDevice);
   }
 
   public handleScanResults(data: Array<ble.ScanResult>): void {
     for (let i = 0; i < data.length; i++) {
       let item = data[i];
-      let device: BleDevice = new BleDevice(item.deviceId, "", item.rssi, new Uint8Array(item.data), new Date().getTime());
+      let device: BleDevice = new BleDevice(item.deviceId, item.deviceName, item.rssi, new Uint8Array(item.data), new Date().getTime());
       this.handleResult(device);
     }
   }
