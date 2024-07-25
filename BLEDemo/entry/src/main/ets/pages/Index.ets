@@ -117,7 +117,7 @@ struct Page {
               }
             }.width('100%')
           }
-        }, (item: BleDevice) => item.getMac())
+        })
       }
       .width('100%')
       .layoutWeight(1)
