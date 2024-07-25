@@ -5,13 +5,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "/Users/autophix/.ohos/config/default_BLEDemo_qg9h1ISVlXPRkgxLhVW57XQWrL-7ScuBsR41HZVyy2c=.cer",
-          "storePassword": "0000001BF24E519C5954EFE14B4E41C92689D0C52E550294D59A2D4D2D6D9C84A2BE9D6F602B001673A451",
+          "certpath": "/Users/autophix/.ohos/config/default_BLEDemo_JSll2mjdvu-bL67bGLCqZcQGALuFBncLNs_Aj4LdW04=.cer",
+          "storePassword": "0000001BA238EF89EC417C6B8EC848CE115879B394918961DA567F9A5BF0B9F037B37700705F8F9D4D7207",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001BAAD7E61455D0348DA65E0553A44F0B53304F9C1085AC212CD8F783B0150898283E314D204BDF5A",
-          "profile": "/Users/autophix/.ohos/config/default_BLEDemo_qg9h1ISVlXPRkgxLhVW57XQWrL-7ScuBsR41HZVyy2c=.p7b",
+          "keyPassword": "0000001B0E25BE6D2EFE64C1BF617D0C7B026A8042C47C69E273FE1F1CBBA53E36FB019E5B67E4E7F6A9D3",
+          "profile": "/Users/autophix/.ohos/config/default_BLEDemo_JSll2mjdvu-bL67bGLCqZcQGALuFBncLNs_Aj4LdW04=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "/Users/autophix/.ohos/config/default_BLEDemo_qg9h1ISVlXPRkgxLhVW57XQWrL-7ScuBsR41HZVyy2c=.p12"
+          "storeFile": "/Users/autophix/.ohos/config/default_BLEDemo_JSll2mjdvu-bL67bGLCqZcQGALuFBncLNs_Aj4LdW04=.p12"
         }
       }
     ],
@@ -44,6 +44,10 @@
           ]
         }
       ]
+    },
+    {
+      "name": "library",
+      "srcPath": "./library",
     }
   ]
 }
