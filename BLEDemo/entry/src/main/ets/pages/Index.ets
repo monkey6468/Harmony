@@ -48,9 +48,6 @@ struct Page {
   @State loading_rotate: number = 0;
   @State bleDeviceList: BleDevice[] = [];
   @State connectedDevices: string[] = [];
-  @State private edit_text_name_hint: string = '';
-  @State private edit_text_mac_hint: string = '';
-  @State private edit_text_uuid_hint: string = '';
   @State private toast_open_bluetooth: string = '';
   @State private toast_connect_fail: string = '';
   @State private toast_disconnected: string = '';
@@ -174,15 +171,6 @@ struct Page {
   private loadStrings() {
     let manager = (GlobalContext.getContext().getValue('context') as Context).resourceManager;
 
-    manager.getString($r('app.string.setting_name').id).then(text => {
-      this.edit_text_name_hint = text;
-    })
-    manager.getString($r('app.string.setting_mac').id).then(text => {
-      this.edit_text_mac_hint = text;
-    })
-    manager.getString($r('app.string.setting_uuid').id).then(text => {
-      this.edit_text_uuid_hint = text;
-    })
     manager.getString($r('app.string.please_open_blue').id).then(text => {
       this.toast_open_bluetooth = text;
     })
@@ -201,20 +189,10 @@ struct Page {
     return ArrayHelper.contains(this.connectedDevices, device.getMac());
   }
 
-  private onSearchSettingClick(): void {
-    if (this.setting_visibility == Visibility.Visible) {
-      this.setting_visibility = Visibility.None;
-      this.search_setting_text = $r('app.string.expand_search_settings')
-    } else {
-      this.setting_visibility = Visibility.Visible;
-      this.search_setting_text = $r('app.string.retrieve_search_settings')
-    }
-  }
-
   private onSearchClick(): void {
     if (this.btn_scan_text.id == $r('app.string.start_scan').id) {
       if (BleManager.MOCK_DEVICE) {
-        this.mockCheckPermissions();
+        this.startScan();
       } else {
         this.checkPermissions();
       }
@@ -241,14 +219,9 @@ struct Page {
     });
   }
 
-  private mockCheckPermissions(): void {
-    this.doScan();
-  }
-
   private checkPermissions(): void {
     let permissions: Permissions[] =
-      ["ohos.permission.USE_BLUETOOTH", "ohos.permission.DISCOVER_BLUETOOTH", "ohos.permission.APPROXIMATELY_LOCATION",
-        "ohos.permission.LOCATION", "ohos.permission.ACCESS_BLUETOOTH"];
+      ["ohos.permission.USE_BLUETOOTH", "ohos.permission.DISCOVER_BLUETOOTH", "ohos.permission.ACCESS_BLUETOOTH"];
     PermissionHelper.requestPermissions(permissions, results => {
       for (let i = 0; i < permissions.length; i++) {
         if (results[i] != 0) {
@@ -262,86 +235,14 @@ struct Page {
       console.info("checkPermissions bluetooth.state: " + result);
       if (result == access.BluetoothState.STATE_OFF) {
         prompt.showToast({ message: this.toast_open_bluetooth, duration: 300, })
+        access.enableBluetooth(); //打开蓝牙
         return;
       }
 
-      this.onPermissionGranted();
+      this.startScan();
     });
   }
 
-  private checkGPS(callback: (result: boolean) => void): void {
-    console.info("calling checkGPS")
-    geolocation.isLocationEnabled((err, enabled) => {
-      console.info("isLocationEnabled err:" + err + ", enabled:" + enabled)
-      callback(!err ? enabled : false);
-    });
-  }
-
-  private onPermissionGranted(): void {
-    console.info("calling onPermissionGranted")
-    this.checkGPS(result => {
-      console.info("checkGPS result:" + result)
-      if (result) {
-        this.doScan();
-      } else {
-        AlertDialog.show({
-          title: $r('app.string.notifyTitle'), message: $r('app.string.gpsNotifyMsg'), confirm: {
-            value: $r('app.string.ok'), action: () => {
-            }
-          }
-        })
-      }
-    });
-  }
-
-  private doScan() {
-    this.setScanRule();
-    this.startScan();
-  }
-
-  private setScanRule(): void {
-    let uuids: string[];
-    let str_uuid: string = this.edit_text_uuid;
-    if (!str_uuid) {
-      uuids = [];
-    } else {
-      uuids = str_uuid.split(",");
-    }
-    let serviceUuids: string[] = [];
-    if (uuids != null && uuids.length > 0) {
-      serviceUuids = new Array(uuids.length);
-      for (let i = 0; i < uuids.length; i++) {
-        let name: string = uuids[i];
-        let components: string[] = name.split("-");
-        if (components.length != 5) {
-          serviceUuids[i] = '';
-        } else {
-          serviceUuids[i] = uuids[i];
-        }
-      }
-    }
-
-    let names: string[];
-    let str_name: string = this.edit_text_name;
-    if (!str_name) {
-      names = [];
-    } else {
-      names = str_name.split(",");
-    }
-
-    let mac: string = this.edit_text_mac;
-
-    let isAutoConnect: boolean = this.switch_auto_connect;
-
-    let scanRuleConfig: BleScanRuleConfig = BleScanRuleConfig.Builder.setServiceUuids(serviceUuids)// 只扫描指定的服务的设备，可选
-      .setDeviceName(true, names)// 只扫描指定广播名的设备，可选
-      .setDeviceMac(mac)// 只扫描指定mac的设备，可选
-      .setAutoConnect(isAutoConnect)// 连接时的autoConnect参数，可选，默认false
-      .setScanTimeOut(10000)// 扫描超时时间，可选，默认10秒
-      .build();
-
-    BleManager.getInstance().initScanRule(scanRuleConfig);
-  }
 
   private startScan(): void {
     let _this = this;
