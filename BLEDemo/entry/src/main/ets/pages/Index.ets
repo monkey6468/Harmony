@@ -79,7 +79,8 @@ struct Page {
                 Image($r('app.media.ic_blue_connected')).objectFit(ImageFit.None).width(30).height(30)
                 Column() {
                   Text(device.getName()).margin({ bottom: 2 }).fontSize(14).fontColor($r('app.color.colorPrimary'))
-                  Text(device.getMac()).margin({ top: 2 }).fontSize(12).fontColor($r('app.color.colorPrimary'))
+                  Text("MacAddress："+device.macAddress).margin({ top: 2 }).fontSize(12).fontColor(Color.Orange)
+                  Text("DeviceId："+device.getMac()).margin({ top: 2 }).fontSize(10).fontColor(Color.Gray)
                 }.layoutWeight(1).margin({ left: 10 }).alignItems(HorizontalAlign.Start)
 
                 Row() {
@@ -101,7 +102,8 @@ struct Page {
                 Image($r('app.media.ic_blue_remote')).objectFit(ImageFit.None).width(30).height(30)
                 Column() {
                   Text(device.getName()).margin({ bottom: 2 }).fontSize(14)
-                  Text(device.getMac()).margin({ top: 2 }).fontSize(12)
+                  Text("MacAddress："+device.macAddress()).margin({ top: 2 }).fontSize(12).fontColor(Color.Orange)
+                  Text("DeviceId："+device.getMac()).margin({ top: 2 }).fontSize(10).fontColor(Color.Gray)
                 }.layoutWeight(1).margin({ left: 10 }).alignItems(HorizontalAlign.Start)
 
                 Row() {
@@ -261,7 +263,7 @@ struct Page {
       }
 
       onScanning(bleDevice: BleDevice): void {
-        console.info("onScanning");
+        console.info("onScanning:", JSON.stringify(bleDevice));
         ArrayHelper.add(_this.bleDeviceList, bleDevice);
 
       }

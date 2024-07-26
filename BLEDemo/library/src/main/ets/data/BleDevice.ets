@@ -15,19 +15,19 @@
 
 export default class BleDevice {
     mDeviceName: string = '';
-    mDeviceId: string=''; //mac
+    mDeviceId: string =''; //用于连接的标识
     mScanRecord: Uint8Array = new Uint8Array();
     mRssi: number=0;
     mTimestampNanos: number=0;
 
-    public constructor(deviceId: string, name: string, rssi?: number, scanRecord ?: Uint8Array, timestampNanos ?: number) {
-        this.mDeviceName = name;
+    public constructor(deviceId: string, mDeviceName: string, rssi?: number, scanRecord ?: Uint8Array, timestampNanos ?: number) {
         this.mDeviceId = deviceId;
-        if (scanRecord) {
-            this.mScanRecord = scanRecord;
-        }
+        this.mDeviceName = mDeviceName;
         if (rssi) {
             this.mRssi = rssi;
+        }
+        if (scanRecord) {
+            this.mScanRecord = scanRecord;
         }
         if (timestampNanos) {
             this.mTimestampNanos = timestampNanos;
@@ -57,14 +57,6 @@ export default class BleDevice {
         return "";
     }
 
-//  public getDevice(): bluetooth.GattClientDevice {
-//    return bluetooth.BLE.createGattClientDevice(this.mDeviceId);
-//  }
-//
-//  public setDevice(device: bluetooth.GattClientDevice) {
-//    this.mDevice = device;
-//  }
-
     public getScanRecord(): Uint8Array {
         return this.mScanRecord;
     }
@@ -77,6 +69,11 @@ export default class BleDevice {
         return this.mRssi;
     }
 
+    // 用于区分设备的标识
+    public macAddress(): string {
+        return this.uint8Array2String(this.getScanRecord());
+    }
+
     public setRssi(rssi: number) {
         this.mRssi = rssi;
     }
@@ -87,5 +84,17 @@ export default class BleDevice {
 
     public setTimestampNanos(timestampNanos: number) {
         this.mTimestampNanos = timestampNanos;
+    }
+
+    uint8Array2String(input: Uint8Array) {
+        let macAddress: string = '';
+        for (let i = 9; i <= 14; i++) {
+            let hexByte = input[i].toString(16).padStart(2, '0').toUpperCase();
+            macAddress += hexByte;
+            if (i < 14) {
+                macAddress += ':';
+            }
+        }
+        return macAddress
     }
 }
