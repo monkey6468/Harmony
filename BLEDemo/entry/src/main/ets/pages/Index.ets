@@ -79,7 +79,7 @@ struct Page {
                 Image($r('app.media.ic_blue_connected')).objectFit(ImageFit.None).width(30).height(30)
                 Column() {
                   Text(device.getName()).margin({ bottom: 2 }).fontSize(14).fontColor($r('app.color.colorPrimary'))
-                  Text("MacAddress："+device.macAddress).margin({ top: 2 }).fontSize(12).fontColor(Color.Orange)
+                  Text("MacAddress："+device.macAddress).margin({ top: 2 }).fontSize(12).fontColor(Color.Green)
                   Text("DeviceId："+device.getMac()).margin({ top: 2 }).fontSize(10).fontColor(Color.Gray)
                 }.layoutWeight(1).margin({ left: 10 }).alignItems(HorizontalAlign.Start)
 
@@ -102,7 +102,7 @@ struct Page {
                 Image($r('app.media.ic_blue_remote')).objectFit(ImageFit.None).width(30).height(30)
                 Column() {
                   Text(device.getName()).margin({ bottom: 2 }).fontSize(14)
-                  Text("MacAddress："+device.macAddress()).margin({ top: 2 }).fontSize(12).fontColor(Color.Orange)
+                  Text("MacAddress："+device.macAddress).margin({ top: 2 }).fontSize(12).fontColor(Color.Orange)
                   Text("DeviceId："+device.getMac()).margin({ top: 2 }).fontSize(10).fontColor(Color.Gray)
                 }.layoutWeight(1).margin({ left: 10 }).alignItems(HorizontalAlign.Start)
 

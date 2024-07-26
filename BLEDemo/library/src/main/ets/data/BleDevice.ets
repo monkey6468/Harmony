@@ -15,13 +15,15 @@
 
 export default class BleDevice {
     mDeviceName: string = '';
-    mDeviceId: string =''; //用于连接的标识
+    macAddress: string ='' // 用于区分设备的标识
+    mDeviceId: string =''; // 用于连接的标识
     mScanRecord: Uint8Array = new Uint8Array();
     mRssi: number=0;
     mTimestampNanos: number=0;
 
-    public constructor(deviceId: string, mDeviceName: string, rssi?: number, scanRecord ?: Uint8Array, timestampNanos ?: number) {
+    public constructor(deviceId: string, mDeviceName: string, rssi?: number, scanRecord?: Uint8Array, timestampNanos ?: number) {
         this.mDeviceId = deviceId;
+        this.macAddress = this.uint8Array2String(scanRecord)
         this.mDeviceName = mDeviceName;
         if (rssi) {
             this.mRssi = rssi;
@@ -69,11 +71,6 @@ export default class BleDevice {
         return this.mRssi;
     }
 
-    // 用于区分设备的标识
-    public macAddress(): string {
-        return this.uint8Array2String(this.getScanRecord());
-    }
-
     public setRssi(rssi: number) {
         this.mRssi = rssi;
     }
@@ -86,10 +83,10 @@ export default class BleDevice {
         this.mTimestampNanos = timestampNanos;
     }
 
-    uint8Array2String(input: Uint8Array) {
+    uint8Array2String(input?: Uint8Array) {
         let macAddress: string = '';
         for (let i = 9; i <= 14; i++) {
-            let hexByte = input[i].toString(16).padStart(2, '0').toUpperCase();
+            let hexByte = input![i].toString(16).padStart(2, '0').toUpperCase();
             macAddress += hexByte;
             if (i < 14) {
                 macAddress += ':';
