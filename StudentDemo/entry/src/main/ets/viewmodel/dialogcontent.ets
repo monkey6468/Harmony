@@ -8,7 +8,7 @@ export struct dialogcontent {
   @Link data: student[]
   @Link stu?: student
   @State name?: string = this.stu?.name
-  @State age: string = this.stu?.age == undefined ? "" : `${this.stu?.age}`
+  @State age: string = this.stu?.age == undefined ? "" : `${this.stu.age}`
   @State school?: string = this.stu?.school
 
   build() {
@@ -60,6 +60,7 @@ export struct dialogcontent {
               age: parseInt(this.age),
               school: this.school ?? ""
             }
+
             studentAdd(stu).then((id: number) => {
               if (id > 0) {
                 stu.id = id
@@ -74,14 +75,14 @@ export struct dialogcontent {
               age: parseInt(this.age),
               school: this.school ?? ""
             }
+            let index = this.data.findIndex((item: student) => item.id == stu.id)
             studentUpdate(stu).then((id: number) => {
               if (id > 0) {
-                this.data[id] = stu
+                this.data[index] = stu
                 this.controller.close()
               }
             })
           }
-
         })
     }.width("80%")
     .height("60%")

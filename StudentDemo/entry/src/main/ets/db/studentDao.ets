@@ -1,11 +1,11 @@
 import { student } from '../model/student';
-import { getrdb } from './db';
+import { get_rdb } from './db';
 import { relationalStore } from '@kit.ArkData';
 
 const TABLE_NAME = "t_student"
 
 export async function studentAll(): Promise<student[]> {
-  let store = await getrdb()
+  let store = await get_rdb()
   let query = new relationalStore.RdbPredicates(TABLE_NAME)
   let rs = await store.query(query)
   let students = new Array<student>()
@@ -23,7 +23,7 @@ export async function studentAll(): Promise<student[]> {
 }
 
 export async function studentUpdate(stu: student): Promise<number> {
-  let store = await getrdb()
+  let store = await get_rdb()
   let query = new relationalStore.RdbPredicates(TABLE_NAME)
   query.equalTo("id", stu.id)
   let values: relationalStore.ValuesBucket = {
@@ -35,16 +35,16 @@ export async function studentUpdate(stu: student): Promise<number> {
 }
 
 export async function studentDelete(id: number): Promise<number> {
-  let store = await getrdb()
+  let store = await get_rdb()
   let query = new relationalStore.RdbPredicates(TABLE_NAME)
   query.equalTo("id", id)
   return store.delete(query)
 }
 
 export async function studentAdd(stu: student): Promise<number> {
-  let store = await getrdb()
+  let store = await get_rdb()
   let values: relationalStore.ValuesBucket = {
-    "id": null,
+    // "id": null,
     "name": stu.name,
     "age": stu.age,
     "school": stu.school,

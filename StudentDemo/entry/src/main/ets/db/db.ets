@@ -5,6 +5,6 @@ const config: relationalStore.StoreConfig = {
   securityLevel: relationalStore.SecurityLevel.S2
 }
 
-export async function getrdb(): Promise<relationalStore.RdbStore> {
+export async function get_rdb(): Promise<relationalStore.RdbStore> {
   return await relationalStore.getRdbStore(globalThis.context, config)
 }

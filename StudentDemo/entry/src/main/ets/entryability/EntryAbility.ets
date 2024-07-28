@@ -2,7 +2,7 @@ import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
 import { relationalStore } from '@kit.ArkData';
-import { getrdb } from '../db/db';
+import { get_rdb } from '../db/db';
 import { CREATE_TABLE } from '../common/sql';
 
 export default class EntryAbility extends UIAbility {
@@ -19,7 +19,7 @@ export default class EntryAbility extends UIAbility {
     // Main window is created, set main page for this ability
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
 
-    let store: relationalStore.RdbStore = await getrdb()
+    let store: relationalStore.RdbStore = await get_rdb()
     store.executeSync(CREATE_TABLE)
     windowStage.loadContent('pages/Index', (err) => {
       if (err.code) {
