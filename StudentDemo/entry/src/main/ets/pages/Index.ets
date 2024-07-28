@@ -24,10 +24,10 @@ struct Index {
       header({ title: "Student Infomation" })
       content({
         data: this.data,
-        updateck: (stu: student) => {
+        updateClick: (stu: student) => {
           this.stu = stu
           this.controller.open()
-        }, deleteck: (stu: student) => {
+        }, deleteClick: (stu: student) => {
           promptAction.showDialog({
             title: "Tip",
             message: `Are you sure to delete ${stu.name}?`,

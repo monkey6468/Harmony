@@ -17,9 +17,9 @@ function textStyle() {
 }
 
 @Builder
-export function genitem(stu: student,
-  updateck: (stu: student) => void,
-  deleteck: (stu: student) => void) {
+export function Cell(stu: student,
+  updateClick: (stu: student) => void,
+  deleteClick: (stu: student) => void) {
   Row() {
     Text(stu.name)
       .fontSize(20)
@@ -38,14 +38,14 @@ export function genitem(stu: student,
         .textStyle()
         .fontColor(Color.White)
         .onClick(() => {
-          updateck(stu)
+          updateClick(stu)
         })
       Text("Delete")
         .textStyle()
         .fontColor(Color.White)
         .margin({ left: 10 })
         .onClick(() => {
-          deleteck(stu)
+          deleteClick(stu)
         })
     }.width("40%")
     .justifyContent(FlexAlign.Center)
