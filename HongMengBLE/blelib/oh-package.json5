@@ -1,0 +1,13 @@
+{
+  "name": "blelib",
+  "version": "1.0.0",
+  "description": "Please describe the basic information.",
+  "main": "Index.ets",
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "long": "^5.2.1"
+  },
+  "devDependencies": {},
+  "dynamicDependencies": {}
+}

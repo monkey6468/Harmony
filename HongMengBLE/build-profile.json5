@@ -1,0 +1,53 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "/Users/autophix/.ohos/config/default_MyHongMengApplication-main_uW6dWR74Re0bUyGMxHb-_nwAFJgsQ44w5NTMPS9Mq5Y=.cer",
+          "storePassword": "0000001BD02E9FE1F09EECCF91EF348B0E8D3F95E7151726894E4368A0EC4207D946F36539F3043F1F084A",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001B73F83B2C698FF62BCD9E1BA8424FF2295C7DBD42FD7636CD07C40438E5FD69047313D200105948",
+          "profile": "/Users/autophix/.ohos/config/default_MyHongMengApplication-main_uW6dWR74Re0bUyGMxHb-_nwAFJgsQ44w5NTMPS9Mq5Y=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "/Users/autophix/.ohos/config/default_MyHongMengApplication-main_uW6dWR74Re0bUyGMxHb-_nwAFJgsQ44w5NTMPS9Mq5Y=.p12"
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "compatibleSdkVersion": "5.0.0(12)",
+        "runtimeOS": "HarmonyOS"
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug",
+      },
+      {
+        "name": "release"
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "blelib",
+      "srcPath": "./blelib"
+    }
+  ]
+}
