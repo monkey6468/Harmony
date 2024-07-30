@@ -222,7 +222,7 @@ class BleManager {
 
           //通道1
           if (serviceUuid == UART_SERVICE_UUID) {
-            // console.log(`NEW SDK Channel 1<------ Receive data: ${HexUtil.arrayBufferToHex(characteristicValue)} , for: ${characteristicUuid} `)
+            // console.log(`Channel 1<------ Receive data: ${HexUtil.arrayBufferToHex(characteristicValue)} , for: ${characteristicUuid} `)
             this.commandManager.onDeviceResponse(1, characteristicValue);
           }
 
@@ -253,7 +253,7 @@ class BleManager {
   //       if (gatt) {
   //         const bleCharacteristicDataOut = await gatt.readCharacteristicValue(characteristic);
   //         const characteristicValue: ArrayBuffer = bleCharacteristicDataOut.characteristicValue;
-  //         console.info(`NEW SDK readCharacteristicValue : ${HexUtil.arrayBufferToHex(characteristicValue)}, for: ${bleCharacteristicDataOut.characteristicUuid}`);
+  //         console.info(`readCharacteristicValue : ${HexUtil.arrayBufferToHex(characteristicValue)}, for: ${bleCharacteristicDataOut.characteristicUuid}`);
   //         resolve(characteristicValue);
   //       }
   //     } catch (err) {

@@ -80,9 +80,8 @@ struct ClientDetail {
         }
         .itemStyle()
 
-        //写特征值(630按键音 开)
         Row() {
-          Button('写特征值 (按键音 开)').onClick(async () => {
+          Button('打开灯').onClick(async () => {
             let uint8Array = new Uint8Array([0xff, 0x07, 0xf0, 0x32, 0xfe]);
             let sendData = Util.typedArrayToBuffer(uint8Array)
 
@@ -103,9 +102,8 @@ struct ClientDetail {
             .width('100%')
         }
 
-        //写特征值 (630按键音 关)
         Row() {
-          Button('写特征值 (按键音 关)').onClick(() => {
+          Button('关闭灯').onClick(() => {
 
             let uint8Array = new Uint8Array([0xff, 0x07, 0x0f, 0x32, 0xfe]);
             let sendData = Util.typedArrayToBuffer(uint8Array)

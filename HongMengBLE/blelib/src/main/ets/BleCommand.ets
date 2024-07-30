@@ -35,7 +35,7 @@ export class BleCommand {
     gatt: ble.GattClientDevice | null,
     serviceUuid: string,
     data: ArrayBuffer,
-    timeout: number = 5000,
+    timeout: number = 0,
     retries: number = 0
   ) {
     this.gatt = gatt;
@@ -74,7 +74,7 @@ export class BleCommand {
    */
   execute(): Promise<void> {
     return new Promise(async (resolve, reject) => {
-      console.log('NEW SDK 执行命令-> 开始')
+      console.log('执行命令-> 开始')
       this.resolveFn = resolve;
       this.rejectFn = reject;
       if (!this.gatt) {
@@ -87,23 +87,18 @@ export class BleCommand {
       try {
         const service = gattServiceList.find(s => s.serviceUuid === this.serviceUuid);
         if (!service) {
-          return reject(`NEW SDK 执行命令-> 未找到服务 ${this.serviceUuid}`);
+          return reject(`执行命令-> 未找到服务 ${this.serviceUuid}`);
         }
-        // const characteristic = service.characteristics.find(c => c.properties?.write && c.properties?.read);
         const characteristic = service.characteristics.find(c => c.properties?.write);
-        // const characteristic = service.characteristics.find(c => c.characteristicUuid === this.characteristicUuid);
         if (!characteristic) {
-          return reject(`NEW SDK 执行命令-> 未找到特征`);
+          return reject(`执行命令-> 未找到特征`);
         }
 
         this.sendTimeoutManager.start(() => {
           this.retry()
         }, this.timeout);
 
-        await this.writeCharacteristicValue(this.data, this.gatt, characteristic);
-        //clearTimeout(timer);
-        //resolve();
-        // 不再直接调用 resolve，而是在收到设备回复时调用
+        this.writeCharacteristicValue(this.data, this.gatt, characteristic);
       } catch (err) {
         reject(err);
       }
@@ -112,12 +107,11 @@ export class BleCommand {
 
   // 当设备回复时调用
   async onDeviceResponse(responseData: ArrayBuffer) {
-    console.log('NEW SDK 执行命令-> 结束 收到设备回复')
-    //clearTimeout(this.timer);
-    // this.sendTimeoutManager.cancel();
-    // this.receiveTimeoutManager.start(() => {
-    //   this.retry()
-    // }, this.timeout);
+    console.log('执行命令-> 结束 收到设备回复')
+    this.sendTimeoutManager.cancel();
+    this.receiveTimeoutManager.start(() => {
+      this.retry()
+    }, this.timeout);
   }
 
   success(responseData: ArrayBuffer) {
@@ -138,11 +132,11 @@ export class BleCommand {
   retry() {
     if (this.currentRetries < this.retries) {
       this.currentRetries++;
-      console.log(`NEW SDK 执行命令-> 超时重试 开始 第${this.currentRetries}次重试`);
+      console.log(`执行命令-> 超时重试 开始 第${this.currentRetries}次重试`);
       this.execute().then(this.resolveFn).catch(this.rejectFn);
     } else {
-      console.log(`NEW SDK 执行命令-> 超时重试 结束 重试${this.currentRetries}次都失败了`);
-      this.rejectFn(Error(`NEW SDK 执行命令-> 命令在 ${this.timeout}ms 后超时`));
+      console.log(`执行命令-> 超时重试 结束 重试${this.currentRetries}次都失败了`);
+      this.rejectFn(Error(`执行命令-> 命令在 ${this.timeout}ms 后超时`));
     }
   }
 
@@ -193,26 +187,26 @@ export class BleCommand {
   }
 }
 
-function concatenateArrayBuffers(buffers: ArrayBuffer[]): ArrayBuffer {
-  const totalLength = buffers.reduce((acc, buffer) => acc + buffer.byteLength, 0);
-  const result = new Uint8Array(totalLength);
-  let offset = 0;
-  for (const buffer of buffers) {
-    result.set(new Uint8Array(buffer), offset);
-    offset += buffer.byteLength;
-  }
-  return result.buffer;
-}
+// function concatenateArrayBuffers(buffers: ArrayBuffer[]): ArrayBuffer {
+//   const totalLength = buffers.reduce((acc, buffer) => acc + buffer.byteLength, 0);
+//   const result = new Uint8Array(totalLength);
+//   let offset = 0;
+//   for (const buffer of buffers) {
+//     result.set(new Uint8Array(buffer), offset);
+//     offset += buffer.byteLength;
+//   }
+//   return result.buffer;
+// }
 
-function subArrayBuffer(buffer: ArrayBuffer, start: number, length?: number): ArrayBuffer {
-  return buffer.slice(start, length ? start + length : undefined);
-}
-
-function readInt32BE(buffer: ArrayBuffer, offset: number): number {
-  const view = new DataView(buffer);
-  return view.getInt32(offset, false);
-}
-
-function arrayBufferToByteArray(buffer: ArrayBuffer): Uint8Array {
-  return new Uint8Array(buffer);
-}
+// function subArrayBuffer(buffer: ArrayBuffer, start: number, length?: number): ArrayBuffer {
+//   return buffer.slice(start, length ? start + length : undefined);
+// }
+//
+// function readInt32BE(buffer: ArrayBuffer, offset: number): number {
+//   const view = new DataView(buffer);
+//   return view.getInt32(offset, false);
+// }
+//
+// function arrayBufferToByteArray(buffer: ArrayBuffer): Uint8Array {
+//   return new Uint8Array(buffer);
+// }
