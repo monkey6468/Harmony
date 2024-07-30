@@ -94,9 +94,13 @@ export class BleCommand {
           return reject(`执行命令-> 未找到特征`);
         }
 
-        this.sendTimeoutManager.start(() => {
+        if (this.timeout) {
+          this.sendTimeoutManager.start(() => {
+            this.retry()
+          }, this.timeout);
+        } else {
           this.retry()
-        }, this.timeout);
+        }
 
         this.writeCharacteristicValue(this.data, this.gatt, characteristic);
       } catch (err) {
@@ -109,9 +113,11 @@ export class BleCommand {
   async onDeviceResponse(responseData: ArrayBuffer) {
     console.log('执行命令-> 结束 收到设备回复')
     this.sendTimeoutManager.cancel();
-    this.receiveTimeoutManager.start(() => {
-      this.retry()
-    }, this.timeout);
+    if (this.timeout > 0) {
+      this.receiveTimeoutManager.start(() => {
+        this.retry()
+      }, this.timeout);
+    }
   }
 
   success(responseData: ArrayBuffer) {
@@ -130,13 +136,17 @@ export class BleCommand {
 
   //重试
   retry() {
-    if (this.currentRetries < this.retries) {
-      this.currentRetries++;
-      console.log(`执行命令-> 超时重试 开始 第${this.currentRetries}次重试`);
-      this.execute().then(this.resolveFn).catch(this.rejectFn);
+    if (this.timeout > 0) {
+      if (this.currentRetries < this.retries) {
+        this.currentRetries++;
+        console.log(`执行命令-> 超时重试 开始 第${this.currentRetries}次重试`);
+        this.execute().then(this.resolveFn).catch(this.rejectFn);
+      } else {
+        console.log(`执行命令-> 超时重试 结束 重试${this.currentRetries}次都失败了`);
+        this.rejectFn(Error(`执行命令-> 命令在 ${this.timeout}ms 后超时`));
+      }
     } else {
-      console.log(`执行命令-> 超时重试 结束 重试${this.currentRetries}次都失败了`);
-      this.rejectFn(Error(`执行命令-> 命令在 ${this.timeout}ms 后超时`));
+      this.resolveFn();
     }
   }
 
