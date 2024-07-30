@@ -3,7 +3,6 @@ import { HexUtil } from './utils/HexUtil';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { TimeoutManager } from './TimeoutManager';
 import { TransmitCompleteCommand } from './TransmitCompleteCommand';
-import { file_download } from './proto/file_download';
 
 /**
  * 基础命令类：包含通道信息、特征、数据、超时时间、重试机制等属性和方法。
@@ -285,12 +284,8 @@ export class BleCommand {
         if (this.storedData.byteLength >= 24 + pbSize) {
           const pbBytes = subArrayBuffer(this.storedData, 24, pbSize);
 
-          const pbInfo = file_download.file_download.decode(new Uint8Array(pbBytes))
 
-          //头:20字节   描述pb长度：4字节   PB   文件
-          isComplete = this.storedData.byteLength === 20 + 4 + pbSize + pbInfo.fileSize;
-
-          console.log("NEW SDK", `文件获取：fileSize = ${pbInfo.fileSize}`);
+          console.log("NEW SDK", `文件获取：fileSize = ${pbBytes}`);
         }
       }
 
