@@ -1,5 +1,4 @@
 import BleManager from '../BleManager';
-import { TransmitCompleteCommand } from '../TransmitCompleteCommand';
 import { ArrayBufferUtil } from '../utils/ArrayBufferUtil';
 
 export class ConfigService {
@@ -19,11 +18,9 @@ export class ConfigService {
         if (!checkData) {
           return false
         }
-        const completeCommand = new TransmitCompleteCommand(checkData)
         return true
       }
     }
-
 
     return await this.deviceBleManager.writeUartRXCharacteristic(sendData, isReceiveFinish)
   }
@@ -34,7 +31,6 @@ export class ConfigService {
    * @returns
    */
   async writeSoundSetting(sendData: ArrayBuffer): Promise<boolean> {
-
     const responseBytes = await this.sendConfigCommand(sendData)
     return ArrayBufferUtil.isCommandStatusSuccess(responseBytes) ?? false
   }

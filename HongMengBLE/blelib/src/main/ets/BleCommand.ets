@@ -2,7 +2,6 @@ import { ble } from '@kit.ConnectivityKit';
 import { HexUtil } from './utils/HexUtil';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { TimeoutManager } from './TimeoutManager';
-import { TransmitCompleteCommand } from './TransmitCompleteCommand';
 
 /**
  * 基础命令类：包含通道信息、特征、数据、超时时间、重试机制等属性和方法。
@@ -149,8 +148,6 @@ export class BleCommand {
     this.receiveTimeoutManager.start(() => {
       this.retry()
     }, this.timeout);
-
-    await this.storeData(responseData);
   }
 
   success(responseData: ArrayBuffer) {
@@ -238,89 +235,6 @@ export class BleCommand {
   };
   private rejectFn: (reason?: object) => void = () => {
   };
-
-  //translation: ((storedData: Uint8Array, checkData: ArrayBuffer | null) => object) | null = null;
-
-  private async storeData(data: ArrayBuffer | null) {
-    // Write data to the stream
-    if (data) {
-      await this.writeData(data);
-    }
-
-    if (this.storedData.byteLength >= 20) {
-      //头部数据 前20字节 (原来命令通道数据)
-      const headerBytes = subArrayBuffer(this.storedData, 0, 20);
-      //数据长度（不包含前20个字节）
-      const dataSize = new TransmitCompleteCommand(headerBytes).dataSize;
-      //数据是否接收完成
-      let isComplete = this.storedData.byteLength === dataSize + 20;
-
-      const headerBytesView = new Uint8Array(headerBytes);
-
-      //码表返回出错了
-      if (headerBytesView[0] === 0x02 && headerBytesView[7] !== 0x00) {
-        console.log("NEW SDK",
-          `${this.commandTag} ----错误----  errCode = ${headerBytesView[7]}， ${Array.from(headerBytesView)
-            .map(b => b.toString(16))
-            .join(' ')}`);
-        if (headerBytesView[7] === 0x01) {
-          //重试
-          this.retry()
-          return;
-        }
-      }
-
-      //---不等于01:表示只有20个头字节   其他值:20个头字节后面还有数据，需要根据数据长度判断是否完成
-      if (headerBytesView[0] !== 0x01) {
-        this.checkIsFinish(headerBytes);
-        return;
-      }
-
-      //---是否获取文件 （比如：同步活动fit文件、获取Log文件 ） 头:20  pbSize：4   PB   文件
-      const isGetFile = headerBytesView[3] === 0x55; //获取文件标识（文件获取 和 其他命令存在差别）
-
-      if (isGetFile && this.storedData.byteLength >= 24) {
-        const pbSize = readInt32BE(this.storedData, 20);
-        if (this.storedData.byteLength >= 24 + pbSize) {
-          const pbBytes = subArrayBuffer(this.storedData, 24, pbSize);
-
-
-          console.log("NEW SDK", `文件获取：fileSize = ${pbBytes}`);
-        }
-      }
-
-      console.log("NEW SDK",
-        `isComplete = ${isComplete}, dataSize = ${dataSize}, mtuData = ${data?.byteLength}, all = ${this.storedData.byteLength}, isGetFile = ${isGetFile}, head = ${Array.from(headerBytesView)
-          .map(b => b.toString(16))
-          .join(' ')}`);
-
-      if (isComplete) {
-        const begin = 20;
-        const mData = subArrayBuffer(this.storedData, begin);
-
-        //const.log("NEW SDK", `校验数据是否正确 fileVerifyVal = ${storeDataInfo.pbInfo?.fileVerifyVal}`);
-
-        //校验数据是否正确  （对文件byteArray求和  和 设备返回的求和值比较 相等：数据正确  不相等：数据存在错误）
-        // （支持校验的设备 && 630 && 读取活动fit）
-        // if (storeDataInfo.pbInfo?.fileVerifyVal !== 0 && manager.iGPDeviceType?.deviceName === "iGS630" && commandTag === WriteCommand.ReadActivityFitFile) {
-        //   const getFileBytesSum = new Uint8Array(mData).reduce((sum, byte) => sum + (byte & 0xFF), 0);
-        //   const.log("NEW SDK", `校验数据是否正确 size = ${mData.byteLength}, sum = ${getFileBytesSum}, ${storeDataInfo.pbInfo?.fileVerifyVal}`);
-        //
-        //   if (getFileBytesSum !== storeDataInfo.pbInfo?.fileVerifyVal) {
-        //     retry({ errorType: 'GetFitFilePartialByteError', checkData: null });
-        //     return;
-        //   }
-        // }
-
-        this.storedData = new ArrayBuffer(0);
-        await this.writeData(mData);
-        this.checkIsFinish(headerBytes);
-
-      }
-
-    }
-
-  }
 
   /**
    * 写入特征值
