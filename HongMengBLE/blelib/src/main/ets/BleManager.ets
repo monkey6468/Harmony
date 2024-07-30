@@ -4,27 +4,11 @@ import { HexUtil } from './utils/HexUtil'
 import { BleCommandManager } from './BleCommandManager'
 import { BleCommand } from './BleCommand'
 import { TransmitCompleteCommand } from './TransmitCompleteCommand'
-import { common } from './proto/common'
-import { config } from './proto/config'
-import { Head20BytesInfo } from './command/Head20BytesInfo'
-import { cycling_data } from './proto/cycling_data'
-import { FitUtil } from './utils/FitUtil'
-import { FitActivityListInfo } from './data/FitActivityListInfo'
-import { BaseHeaderData } from './command/BaseHeaderData'
-import { FileDownloadResult, FileUtil } from './utils/FileUtil'
 import { DeviceConnectStatus } from './data/DeviceConnectStatus'
 import Observable from './utils/Observable'
-import { ArrayBufferUtil } from './utils/ArrayBufferUtil'
-import { sensor } from './proto/sensor'
 import { ConfigService } from './services/ConfigService'
-import { SensorService } from './services/SensorService'
-import { ActivityService } from './services/ActivityService'
-import { FirmwareService } from './services/FirmwareService'
 
 //通道1
-// const UART_SERVICE_UUID = "0000FFF0-0000-1000-8000-00805F9B34FB"
-// const UART_RX_Characteristic_UUID = "0000FFF0-0000-1000-8000-00805F9B34FB"//手机用于发送给设备
-// const UART_TX_Characteristic_UUID = "0000FFF0-0000-1000-8000-00805F9B34FB"//手机用于接收
 const UART_SERVICE_UUID = "0000FFD5-0000-1000-8000-00805F9B34FB"
 const UART_RX_Characteristic_UUID = "0000FFDA-0000-1000-8000-00805F9B34FB"//手机用于发送给设备
 const UART_TX_Characteristic_UUID = "00002902-0000-1000-8000-00805F9B34FB"//手机用于接收
@@ -50,14 +34,8 @@ const BATTERY_LEVEL_CHARACTERISTIC_UUID = "00002A19-0000-1000-8000-00805F9B34FB"
 
  class BleManager{
 
-   //同步活动相关
-  activityService = new ActivityService(this)
-  //传感器相关
-  sensorService = new SensorService(this)
   //配置相关
   configService = new ConfigService(this);
-  //固件相关(版本、更新)
-  firmwareService = new FirmwareService(this);
 
 
   private commandManager: BleCommandManager;
