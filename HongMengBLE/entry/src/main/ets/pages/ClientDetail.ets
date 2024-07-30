@@ -84,18 +84,6 @@ struct ClientDetail {
 
         //读取指定通道（电量）的特征
         Column({ space: 10 }) {
-          Button('client端读取蓝牙低功耗设备电量的特征值').onClick(async () => {
-            const characteristicValue = await this.bleManager.readBattery()
-            if (characteristicValue) {
-              // 创建一个DataView来读取ArrayBuffer
-              const dataView = new DataView(characteristicValue);
-              // 从DataView中获取第一个字节的值
-              const firstByte = dataView.getUint8(0); // 这里假设你想要获取的是无符号整数
-              this.characteristicValue = '特征值：' + firstByte;
-            }
-
-          })
-
           Scroll() {
             if (this.characteristicValue) {
               Text(JSON.stringify(this.characteristicValue))
