@@ -9,35 +9,17 @@ import { ConfigService } from './services/ConfigService'
 
 //通道1
 const UART_SERVICE_UUID = "0000FFD5-0000-1000-8000-00805F9B34FB"
-const UART_RX_Characteristic_UUID = "0000FFDA-0000-1000-8000-00805F9B34FB"//手机用于发送给设备
-const UART_TX_Characteristic_UUID = "00002902-0000-1000-8000-00805F9B34FB"//手机用于接收
 
 
- class BleManager{
-
+class BleManager {
   //配置相关
   configService = new ConfigService(this);
 
-
-  private commandManager: BleCommandManager;
-
-   //Gatt 客户端设备实例
-  private gattClientDevice: ble.GattClientDevice | null = null;
-
-  //通道1 的服务信息
-  gattServiceInfo: ble.GattService | undefined = undefined;
-  //通道2 的服务信息
-  uart2gattServiceInfo: ble.GattService | undefined = undefined;
-  //通道3 的服务信息
-  uart3gattServiceInfo: ble.GattService | undefined = undefined;
-  //通道4 的服务信息
-  uart4gattServiceInfo: ble.GattService | undefined = undefined;
-
-  //电池 的服务信息
-  batteryGattServiceInfo: ble.GattService | undefined = undefined;
-
   //设备连接状态
   deviceConnectStatus = new Observable<DeviceConnectStatus>();
+  private commandManager: BleCommandManager;
+  //Gatt 客户端设备实例
+  private gattClientDevice: ble.GattClientDevice | null = null;
 
   private constructor() {
     this.commandManager = new BleCommandManager();
@@ -47,7 +29,7 @@ const UART_TX_Characteristic_UUID = "00002902-0000-1000-8000-00805F9B34FB"//手�
     return new BleManager()
   }
 
-  public init(): void{
+  public init(): void {
     console.log("BleManager initialization")
   }
 
@@ -57,7 +39,7 @@ const UART_TX_Characteristic_UUID = "00002902-0000-1000-8000-00805F9B34FB"//手�
   getDeviceName(): Promise<string> {
     return new Promise((resolve, reject) => {
       const gattClient = this.gattClientDevice
-      if(gattClient == null) {
+      if (gattClient == null) {
         reject("gattClientDevice is null")
         return
       }
@@ -89,7 +71,7 @@ const UART_TX_Characteristic_UUID = "00002902-0000-1000-8000-00805F9B34FB"//手�
    * 通过deviceId(address)连接设备
    * @param deviceId
    */
-  connectById(deviceId: string): ble.GattClientDevice | null{
+  connectById(deviceId: string): ble.GattClientDevice | null {
     const clientDevice = ble.createGattClientDevice(deviceId)
     this.gattClientDevice = clientDevice
     if (clientDevice) {
@@ -148,6 +130,19 @@ const UART_TX_Characteristic_UUID = "00002902-0000-1000-8000-00805F9B34FB"//手�
   }
 
   /**
+   * 通道1 写特征
+   * @param data 要写入的数据
+   * @returns Promise<void>
+   */
+  async writeUartRXCharacteristic(data: ArrayBuffer, isReceiveFinish: ((checkData: ArrayBuffer | null,
+    storedData: Uint8Array) => boolean) | null): Promise<ArrayBuffer> {
+    const command = new BleCommand(this.gattClientDevice, UART_SERVICE_UUID, data);
+    command.isReceiveFinish = isReceiveFinish
+    this.addCommand(1, command);
+    return command.awaitResponse()
+  }
+
+  /**
    * client端获取蓝牙低功耗设备的所有服务，即服务发现 (获取所有服务)
    */
   private async getServices() {
@@ -158,15 +153,11 @@ const UART_TX_Characteristic_UUID = "00002902-0000-1000-8000-00805F9B34FB"//手�
       let gatt = this.gattClientDevice;
 
       for (const item of result) {
-        console.info('getServices item= ' + JSON.stringify(item));
-
         // 通道1
         if (item.serviceUuid === UART_SERVICE_UUID) {
-          this.gattServiceInfo = item;
-          const characteristic = item.characteristics.find(c => c.characteristicUuid === UART_TX_Characteristic_UUID);
-          console.log(`getServices 通道1 characteristic = '${characteristic?.characteristicUuid}'`);
-          // setNotification
-          if (characteristic) {
+          for (let characteristic of item.characteristics) {
+            console.log(`getServices 通道1 characteristic = '${characteristic?.characteristicUuid}'`);
+            // setNotification
             const success = await this.setNotificationChannel(gatt, item, characteristic, true);
             if (success) {
               console.log(`Notification set successfully for characteristic（通道1） ${characteristic.characteristicUuid}`);
@@ -189,17 +180,17 @@ const UART_TX_Characteristic_UUID = "00002902-0000-1000-8000-00805F9B34FB"//手�
    * 向服务端发送设置通知此indicate征值请求
    */
   private async setNotificationChannel(
-    gatt: ble.GattClientDevice | null ,
+    gatt: ble.GattClientDevice | null,
     gattService: ble.GattService | undefined,
     characteristic: ble.BLECharacteristic,
     enable: boolean
-  ): Promise<boolean>{
+  ): Promise<boolean> {
     if (!gattService) {
       console.log('bluetooth gattServiceInfo is undefined ');
       return false; // 返回失败
     }
 
-    if (gatt == null){
+    if (gatt == null) {
       console.log('gatt is null')
       return false; // 返回失败
     }
@@ -231,7 +222,7 @@ const UART_TX_Characteristic_UUID = "00002902-0000-1000-8000-00805F9B34FB"//手�
           const characteristicValue = characteristicChangeReq.characteristicValue
 
           //通道1
-          if(serviceUuid == UART_SERVICE_UUID){
+          if (serviceUuid == UART_SERVICE_UUID) {
             console.log(`NEW SDK Channel 1<------ Receive data: ${HexUtil.arrayBufferToHex(characteristicValue)} , for: ${characteristicUuid} `)
             this.commandManager.onDeviceResponse(1, characteristicValue);
           }
@@ -245,7 +236,6 @@ const UART_TX_Characteristic_UUID = "00002902-0000-1000-8000-00805F9B34FB"//手�
       (err as BusinessError).message);
     }
   }
-
 
   /**
    * client端读取蓝牙低功耗设备特定服务的特征值 (读取指定通道的特征)
@@ -275,7 +265,6 @@ const UART_TX_Characteristic_UUID = "00002902-0000-1000-8000-00805F9B34FB"//手�
     });
   }
 
-
   /**
    * 添加命令并执行
    * @param channel 通道编号
@@ -284,19 +273,6 @@ const UART_TX_Characteristic_UUID = "00002902-0000-1000-8000-00805F9B34FB"//手�
   private addCommand(channel: number, command: BleCommand) {
     this.commandManager.addCommand(channel, command);
   }
-
-  /**
-   * 通道1 写特征
-   * @param data 要写入的数据
-   * @returns Promise<void>
-   */
-  async writeUartRXCharacteristic(data: ArrayBuffer, isReceiveFinish: ((checkData: ArrayBuffer | null, storedData: Uint8Array) => boolean) | null): Promise<ArrayBuffer> {
-    const command = new BleCommand(this.gattClientDevice, UART_SERVICE_UUID, UART_RX_Characteristic_UUID, data);
-    command.isReceiveFinish = isReceiveFinish
-    this.addCommand(1, command);
-    return command.awaitResponse()
-  }
-
 }
 
 export default BleManager;

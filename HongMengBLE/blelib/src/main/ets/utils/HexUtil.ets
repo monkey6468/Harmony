@@ -1,26 +1,4 @@
-
-export class HexUtil{
-
-  /**
-   * 将 ArrayBuffer 转十六进制字符串
-   * @param buffer
-   * @param hasSpace
-   * @returns
-   */
-  // public static arrayBufferToHex(buffer: ArrayBuffer, hasSpace: boolean = true): string {
-  //   const byteArray = new Uint8Array(buffer);
-  //   const hexParts: string[] = [];
-  //
-  //   byteArray.forEach(byte => {
-  //     // 将字节转换为两位十六进制字符串，并推入数组
-  //     const hex = byte.toString(16).padStart(2, '0');
-  //     hexParts.push(hex);
-  //   });
-  //
-  //   // 根据hasSpace参数选择是否添加空格
-  //   return hasSpace ? hexParts.join(' ') : hexParts.join('');
-  // }
-
+export class HexUtil {
   /**
    * 将 ArrayBuffer 或 Uint8Array 转十六进制字符串
    * @param input
@@ -141,10 +119,33 @@ export class HexUtil{
    * @param count 需要截取的长度
    * @returns 截取后的数组
    */
-  public static subBytes(src: Uint8Array, begin: number, count: number): Uint8Array {
-    const bs = new Uint8Array(count);
-    bs.set(src.subarray(begin, begin + count));
-    return bs;
-  }
+  // public static subBytes(src: Uint8Array, begin: number, count: number): Uint8Array {
+  //   const bs = new Uint8Array(count);
+  //   bs.set(src.subarray(begin, begin + count));
+  //   return bs;
+  // }
 
+  // head[7] 等于 00 表示命令成功 其他表示失败
+  public static isCommandStatusSuccess(headerBytes: ArrayBuffer | Uint8Array | null): boolean | null {
+    try {
+      if (headerBytes) {
+        let view: Uint8Array;
+
+        // 检查 headerBytes 是 ArrayBuffer 还是 Uint8Array，并进行相应处理
+        if (headerBytes instanceof ArrayBuffer) {
+          view = new Uint8Array(headerBytes);
+        } else {
+          view = headerBytes;
+        }
+
+        // 确保视图长度大于 7
+        if (view.length > 7) {
+          return view[7] === 0x00;
+        }
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
 }

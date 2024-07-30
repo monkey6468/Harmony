@@ -1,5 +1,5 @@
 import BleManager from '../BleManager';
-import { ArrayBufferUtil } from '../utils/ArrayBufferUtil';
+import { HexUtil } from '../utils/HexUtil';
 
 export class ConfigService {
   private deviceBleManager: BleManager
@@ -32,6 +32,6 @@ export class ConfigService {
    */
   async writeSoundSetting(sendData: ArrayBuffer): Promise<boolean> {
     const responseBytes = await this.sendConfigCommand(sendData)
-    return ArrayBufferUtil.isCommandStatusSuccess(responseBytes) ?? false
+    return HexUtil.isCommandStatusSuccess(responseBytes) ?? false
   }
 }

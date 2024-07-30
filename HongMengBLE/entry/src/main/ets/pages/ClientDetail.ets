@@ -20,8 +20,6 @@ struct ClientDetail {
   @State connectStateSwitch: boolean = false;
   //连接状态
   @State devConnectState: DeviceConnectStatus = DeviceConnectStatus.DeviceDisconnected;
-  //读取的电池特征（电量）
-  @State characteristicValue: string = '';
   // 设备连接状态观察者
   deviceConnectStatusObserver = (connectStatus: DeviceConnectStatus) => {
     console.log(`设备连接状态观察者-> connectStatusObserver ${DeviceConnectStatus[connectStatus]}`);
@@ -82,27 +80,12 @@ struct ClientDetail {
         }
         .itemStyle()
 
-        //读取指定通道（电量）的特征
-        Column({ space: 10 }) {
-          Scroll() {
-            if (this.characteristicValue) {
-              Text(JSON.stringify(this.characteristicValue))
-            } else {
-              Text('暂无数据')
-            }
-          }
-          .height(50)
-          .scrollBar(BarState.Off)
-        }
-        .itemStyle()
-
         //写特征值(630按键音 开)
         Row() {
           Button('写特征值 (按键音 开)').onClick(async () => {
             let uint8Array = new Uint8Array([0xff, 0x07, 0xf0, 0x32, 0xfe]);
             let sendData = Util.typedArrayToBuffer(uint8Array)
 
-            console.log(`UART RX Characteristic write start responseData `)
             this.bleManager.configService.writeSoundSetting(sendData)
               .then((response: Boolean) => {
                 console.log(`UART RX Characteristic write end response:${response} `)

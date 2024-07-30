@@ -8,17 +8,13 @@ import { TimeoutManager } from './TimeoutManager';
  */
 export class BleCommand {
   //保存设备返回的数据
-  storedData = new ArrayBuffer(0);
   isReceiveFinish: ((checkData: ArrayBuffer | null, storedData: Uint8Array) => boolean) | null = null;
   private gatt: ble.GattClientDevice | null;
   private serviceUuid: string;
-  private characteristicUuid: string;
   private data: ArrayBuffer;
   private timeout: number;
   private retries: number;
   private currentRetries: number = 0;
-  private commandTag: String = ""; //命令标签
-  //private timer: number|null = null;
   private resolve: ((value: ArrayBuffer | PromiseLike<ArrayBuffer>) => void) | null = null;
   private reject: ((reason?: object) => void) | null = null;
   private promise: Promise<ArrayBuffer>;
@@ -31,7 +27,6 @@ export class BleCommand {
    * 创建一个新的蓝牙命令实例
    * @param gatt Gatt 客户端设备实例
    * @param serviceUuid 服务 UUID
-   * @param characteristicUuid 特征 UUID
    * @param data 要写入的数据
    * @param timeout 命令超时时间（毫秒）
    * @param retries 命令失败后的重试次数
@@ -39,14 +34,12 @@ export class BleCommand {
   constructor(
     gatt: ble.GattClientDevice | null,
     serviceUuid: string,
-    characteristicUuid: string,
     data: ArrayBuffer,
     timeout: number = 5000,
     retries: number = 0
   ) {
     this.gatt = gatt;
     this.serviceUuid = serviceUuid;
-    this.characteristicUuid = characteristicUuid;
     this.data = data;
     this.timeout = timeout;
     this.retries = retries;
@@ -55,10 +48,6 @@ export class BleCommand {
       this.resolve = resolve;
       this.reject = reject;
     });
-  }
-
-  async writeData(data: ArrayBuffer) {
-    this.storedData = concatenateArrayBuffers([this.storedData, data]);
   }
 
   /**
@@ -104,30 +93,11 @@ export class BleCommand {
         const characteristic = service.characteristics.find(c => c.properties?.write);
         // const characteristic = service.characteristics.find(c => c.characteristicUuid === this.characteristicUuid);
         if (!characteristic) {
-          return reject(`NEW SDK 执行命令-> 未找到特征 ${this.characteristicUuid}`);
+          return reject(`NEW SDK 执行命令-> 未找到特征`);
         }
-
-        // this.timer = setTimeout(() => {
-        //   if (this.currentRetries < this.retries) {
-        //     this.currentRetries++;
-        //     console.log(`NEW SDK 执行命令-> 超时重试 开始 第${this.currentRetries}次重试`)
-        //     this.execute().then(resolve).catch(reject);
-        //   } else {
-        //     console.log(`NEW SDK 执行命令-> 超时重试 结束 重试${this.currentRetries}次都失败了`)
-        //     reject(`NEW SDK 执行命令-> 命令在 ${this.timeout}ms 后超时`);
-        //   }
-        // }, this.timeout);
 
         this.sendTimeoutManager.start(() => {
           this.retry()
-          // if (this.currentRetries < this.retries) {
-          //   this.currentRetries++;
-          //   console.log(`NEW SDK 执行命令-> 超时重试 开始 第${this.currentRetries}次重试`);
-          //   this.execute().then(resolve).catch(reject);
-          // } else {
-          //   console.log(`NEW SDK 执行命令-> 超时重试 结束 重试${this.currentRetries}次都失败了`);
-          //   reject(`NEW SDK 执行命令-> 命令在 ${this.timeout}ms 后超时`);
-          // }
         }, this.timeout);
 
         await this.writeCharacteristicValue(this.data, this.gatt, characteristic);
@@ -174,60 +144,6 @@ export class BleCommand {
       console.log(`NEW SDK 执行命令-> 超时重试 结束 重试${this.currentRetries}次都失败了`);
       this.rejectFn(Error(`NEW SDK 执行命令-> 命令在 ${this.timeout}ms 后超时`));
     }
-  }
-
-  checkIsFinish(checkData: ArrayBuffer) {
-    if (!this.isReceiveFinish) {
-      throw new Error(" 需要设置 isReceiveFinish 方法");
-    }
-
-    // if (!this.translation) {
-    //   throw new Error(" 需要设置 translation 方法");
-    // }
-
-    const storedDataByteArray = arrayBufferToByteArray(this.storedData);
-
-    if (this.isReceiveFinish(checkData, storedDataByteArray)) {
-      this.sendTimeoutManager.cancel();
-      this.receiveTimeoutManager.cancel();
-
-      try {
-
-        console.log("NEW SDK",
-          `头部命令： ${HexUtil.arrayBufferToHex(checkData)}, [0]：${checkData ? new Uint8Array(checkData)[0] :
-            null}, [7]：${checkData ? new Uint8Array(checkData)[7] : null}`);
-
-        const checkDataView = new Uint8Array(checkData ?? new ArrayBuffer(0));
-
-        //针对620wifi 做处理  （head[7]==0x17: 表示码表正在使用Wi-FiWi-Fi）
-        if (checkDataView[0] === 0x02 && checkDataView[7] === 0x17) {
-          this.failure()
-          return;
-        }
-
-        //02  06  不支持命令  执行下一个命令
-        if (checkDataView[0] === 0x02 && checkDataView[7] === 0x06) {
-          this.failure()
-          return;
-        }
-
-        //02  01 数据错误  重试
-        if (checkDataView[0] === 0x02 && checkDataView[7] === 0x01) {
-          this.retry()
-          return;
-        }
-
-        console.log("NEW SDK", `commandTag=${this.commandTag}  --命令成功！--`);
-        this.success(this.storedData)
-
-      } catch (e) {
-        this.retry()
-        console.log("NEW SDK", `checkIsFinish commandTag=${this.commandTag}  --异常！--`);
-      }
-
-    }
-
-
   }
 
   // 用于标识命令是否完成的标志
