@@ -22,9 +22,12 @@ import { ActivityService } from './services/ActivityService'
 import { FirmwareService } from './services/FirmwareService'
 
 //通道1
-const UART_SERVICE_UUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
-const UART_RX_Characteristic_UUID = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"//手机用于发送给设备
-const UART_TX_Characteristic_UUID = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"//手机用于接收
+// const UART_SERVICE_UUID = "0000FFF0-0000-1000-8000-00805F9B34FB"
+// const UART_RX_Characteristic_UUID = "0000FFF0-0000-1000-8000-00805F9B34FB"//手机用于发送给设备
+// const UART_TX_Characteristic_UUID = "0000FFF0-0000-1000-8000-00805F9B34FB"//手机用于接收
+const UART_SERVICE_UUID = "0000FFD5-0000-1000-8000-00805F9B34FB"
+const UART_RX_Characteristic_UUID = "0000FFDA-0000-1000-8000-00805F9B34FB"//手机用于发送给设备
+const UART_TX_Characteristic_UUID = "00002902-0000-1000-8000-00805F9B34FB"//手机用于接收
 
 //通道2
 const CONTROL_UART_SERVICE_UUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA8E"
@@ -365,36 +368,36 @@ const BATTERY_LEVEL_CHARACTERISTIC_UUID = "00002A19-0000-1000-8000-00805F9B34FB"
   }
 
   //写特征值
-  private async writeCharacteristicValue(
-    data: ArrayBuffer,
-    gatt: ble.GattClientDevice | null | undefined,
-    characteristic: ble.BLECharacteristic,
-  ): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        if (gatt) {
-          // 根据 MTUSize 分包
-          const arrayBuffer = HexUtil.splitArrayBuffer(data, 20);
-          for (let i = 0; i < arrayBuffer.length; i++) {
-            const value = arrayBuffer[i]
-            characteristic.characteristicValue = value
-            await gatt.writeCharacteristicValue(characteristic, ble.GattWriteType.WRITE_NO_RESPONSE);
-            console.log(`writeCharacteristicValue wrValue--> :  ${HexUtil.arrayBufferToHex(value)}`)
-          }
-          console.log('BluetoothPage writeCharacteristicValue finish');
-          resolve();
-        } else {
-          reject(new Error('Gatt client device is null or undefined'));
-        }
-      } catch (err) {
-        const errorCode = (err as BusinessError).code;
-        const errorMessage = (err as BusinessError).message;
-        console.error('errCode: ' + errorCode + ', errMessage: ' + errorMessage);
-        reject(new Error(`errCode: ${errorCode}, errMessage: ${errorMessage}`));
-      }
-
-    });
-  }
+  // private async writeCharacteristicValue(
+  //   data: ArrayBuffer,
+  //   gatt: ble.GattClientDevice | null | undefined,
+  //   characteristic: ble.BLECharacteristic,
+  // ): Promise<void> {
+  //   return new Promise(async (resolve, reject) => {
+  //     try {
+  //       if (gatt) {
+  //         // 根据 MTUSize 分包
+  //         const arrayBuffer = HexUtil.splitArrayBuffer(data, 20);
+  //         for (let i = 0; i < arrayBuffer.length; i++) {
+  //           const value = arrayBuffer[i]
+  //           characteristic.characteristicValue = value
+  //           await gatt.writeCharacteristicValue(characteristic, ble.GattWriteType.WRITE_NO_RESPONSE);
+  //           console.log(`writeCharacteristicValue wrValue--> :  ${HexUtil.arrayBufferToHex(value)}`)
+  //         }
+  //         console.log('BluetoothPage writeCharacteristicValue finish');
+  //         resolve();
+  //       } else {
+  //         reject(new Error('Gatt client device is null or undefined'));
+  //       }
+  //     } catch (err) {
+  //       const errorCode = (err as BusinessError).code;
+  //       const errorMessage = (err as BusinessError).message;
+  //       console.error('errCode: ' + errorCode + ', errMessage: ' + errorMessage);
+  //       reject(new Error(`errCode: ${errorCode}, errMessage: ${errorMessage}`));
+  //     }
+  //
+  //   });
+  // }
 
   /**
    * client端读取蓝牙低功耗设备特定服务的特征值 (读取指定通道的特征)
