@@ -4,6 +4,8 @@ import { BusinessError } from '@kit.BasicServicesKit';
 
 import { BleManager } from '@ohos/blebib';
 import { DeviceConnectStatus } from '@ohos/blebib/src/main/ets/data/DeviceConnectStatus';
+import { util } from '@kit.ArkTS';
+import Util from '../utils/Util';
 
 @Entry
 @Component
@@ -110,7 +112,7 @@ struct ClientDetail {
         Row() {
           Button('写特征值 (按键音 开)').onClick(async () => {
             let uint8Array = new Uint8Array([0xff, 0x07, 0xf0, 0x32, 0xfe]);
-            let sendData = this.typedArrayToBuffer(uint8Array)
+            let sendData = Util.typedArrayToBuffer(uint8Array)
 
             console.log(`UART RX Characteristic write start responseData `)
             this.bleManager.configService.writeSoundSetting(sendData)
@@ -135,7 +137,7 @@ struct ClientDetail {
           Button('写特征值 (按键音 关)').onClick(() => {
 
             let uint8Array = new Uint8Array([0xff, 0x07, 0x0f, 0x32, 0xfe]);
-            let sendData = this.typedArrayToBuffer(uint8Array)
+            let sendData = Util.typedArrayToBuffer(uint8Array)
 
             this.bleManager.configService.writeSoundSetting(sendData)
               .then((response: Boolean) => {
@@ -188,10 +190,6 @@ struct ClientDetail {
    */
   disconnectServer() {
     this.bleManager.disconnect()
-  }
-
-  private typedArrayToBuffer(array: Uint8Array): ArrayBuffer {
-    return array.buffer.slice(array.byteOffset, array.byteLength + array.byteOffset)
   }
 }
 
