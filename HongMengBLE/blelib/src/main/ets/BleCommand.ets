@@ -142,9 +142,6 @@ export class BleCommand {
     });
   }
 
-  private typedArrayToBuffer(array: Uint8Array): ArrayBuffer {
-    return array.buffer.slice(array.byteOffset, array.byteLength + array.byteOffset)
-  }
   // 当设备回复时调用
   async onDeviceResponse(responseData: ArrayBuffer) {
     console.log('NEW SDK 执行命令-> 结束 收到设备回复')
@@ -153,11 +150,6 @@ export class BleCommand {
     this.receiveTimeoutManager.start(() => {
       this.retry()
     }, this.timeout);
-    // this.resolveFn();
-    // if (this.resolve) {
-    //   this.resolve(responseData);
-    // }
-    //this.success(responseData);
 
     await this.storeData(responseData);
   }
@@ -245,7 +237,6 @@ export class BleCommand {
   // 用于标识命令是否完成的标志
   private resolveFn: () => void = () => {
   };
-
   private rejectFn: (reason?: object) => void = () => {
   };
 
@@ -351,9 +342,6 @@ export class BleCommand {
     return new Promise(async (resolve, reject) => {
       try {
         if (gatt) {
-          // let uint8Array = new Uint8Array([0xff, 0x07, 0x0f, 0x32, 0xfe]);
-          let uint8Array = new Uint8Array([0xff, 0x07, 0xf0, 0x32, 0xfe]);
-          data = this.typedArrayToBuffer(uint8Array)
           console.log('BluetoothPage writeCharacteristicValue', JSON.stringify(characteristic));
 
           // 根据 MTUSize 分包
