@@ -114,10 +114,10 @@ export class BleCommand {
   async onDeviceResponse(responseData: ArrayBuffer) {
     console.log('NEW SDK 执行命令-> 结束 收到设备回复')
     //clearTimeout(this.timer);
-    this.sendTimeoutManager.cancel();
-    this.receiveTimeoutManager.start(() => {
-      this.retry()
-    }, this.timeout);
+    // this.sendTimeoutManager.cancel();
+    // this.receiveTimeoutManager.start(() => {
+    //   this.retry()
+    // }, this.timeout);
   }
 
   success(responseData: ArrayBuffer) {

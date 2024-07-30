@@ -1,6 +1,5 @@
 import { ble, constant } from '@kit.ConnectivityKit'
 import { BusinessError } from '@kit.BasicServicesKit'
-import { HexUtil } from './utils/HexUtil'
 import { BleCommandManager } from './BleCommandManager'
 import { BleCommand } from './BleCommand'
 import { DeviceConnectStatus } from './data/DeviceConnectStatus'
@@ -150,23 +149,23 @@ class BleManager {
       const result: Array<ble.GattService> = await this.gattClientDevice.getServices();
       console.info('getServices successfully:' + JSON.stringify(result));
 
-      let gatt = this.gattClientDevice;
+      // let gatt = this.gattClientDevice;
 
-      for (const item of result) {
-        // 通道1
-        if (item.serviceUuid === UART_SERVICE_UUID) {
-          for (let characteristic of item.characteristics) {
-            console.log(`getServices 通道1 characteristic = '${characteristic?.characteristicUuid}'`);
-            // setNotification
-            const success = await this.setNotificationChannel(gatt, item, characteristic, true);
-            if (success) {
-              console.log(`Notification set successfully for characteristic（通道1） ${characteristic.characteristicUuid}`);
-            } else {
-              console.log(`Failed to set notification for characteristic（通道1） ${characteristic.characteristicUuid}`);
-            }
-          }
-        }
-      }
+      // for (const item of result) {
+      //   // 通道1
+      //   if (item.serviceUuid === UART_SERVICE_UUID) {
+      //     for (let characteristic of item.characteristics) {
+      //       console.log(`getServices 通道1 characteristic = '${characteristic?.characteristicUuid}'`);
+      //       // setNotification
+      //       const success = await this.setNotificationChannel(gatt, item, characteristic, true);
+      //       if (success) {
+      //         console.log(`Notification set successfully for characteristic（通道1） ${characteristic.characteristicUuid}`);
+      //       } else {
+      //         console.log(`Failed to set notification for characteristic（通道1） ${characteristic.characteristicUuid}`);
+      //       }
+      //     }
+      //   }
+      // }
 
       //接收设备数据
       this.onBleCharacteristicChange()
@@ -179,35 +178,35 @@ class BleManager {
   /**
    * 向服务端发送设置通知此indicate征值请求
    */
-  private async setNotificationChannel(
-    gatt: ble.GattClientDevice | null,
-    gattService: ble.GattService | undefined,
-    characteristic: ble.BLECharacteristic,
-    enable: boolean
-  ): Promise<boolean> {
-    if (!gattService) {
-      console.log('bluetooth gattServiceInfo is undefined ');
-      return false; // 返回失败
-    }
-
-    if (gatt == null) {
-      console.log('gatt is null')
-      return false; // 返回失败
-    }
-
-    try {
-      if (gatt) {
-        console.log(`setNotificationChannel characteristic UUID: ${characteristic.characteristicUuid}, enable: ${enable}`);
-        await gatt?.setCharacteristicChangeNotification(characteristic, enable)
-        console.log('BluetoothPage setCharacteristicChangeNotification finish');
-        return true; // 返回成功
-      }
-    } catch (err) {
-      console.error('errCode: ' + (err as BusinessError).code + ', errMessage: ' + (err as BusinessError).message);
-      return false; // 返回失败
-    }
-    return false; // 如果没有gatt，返回失败
-  }
+  // private async setNotificationChannel(
+  //   gatt: ble.GattClientDevice | null,
+  //   gattService: ble.GattService | undefined,
+  //   characteristic: ble.BLECharacteristic,
+  //   enable: boolean
+  // ): Promise<boolean> {
+  //   if (!gattService) {
+  //     console.log('bluetooth gattServiceInfo is undefined ');
+  //     return false; // 返回失败
+  //   }
+  //
+  //   if (gatt == null) {
+  //     console.log('gatt is null')
+  //     return false; // 返回失败
+  //   }
+  //
+  //   try {
+  //     if (gatt) {
+  //       console.log(`setNotificationChannel characteristic UUID: ${characteristic.characteristicUuid}, enable: ${enable}`);
+  //       await gatt?.setCharacteristicChangeNotification(characteristic, enable)
+  //       console.log('BluetoothPage setCharacteristicChangeNotification finish');
+  //       return true; // 返回成功
+  //     }
+  //   } catch (err) {
+  //     console.error('errCode: ' + (err as BusinessError).code + ', errMessage: ' + (err as BusinessError).message);
+  //     return false; // 返回失败
+  //   }
+  //   return false; // 如果没有gatt，返回失败
+  // }
 
   /**
    * 订阅蓝牙低功耗设备的特征值变化事件 (接收消息)
@@ -223,12 +222,12 @@ class BleManager {
 
           //通道1
           if (serviceUuid == UART_SERVICE_UUID) {
-            console.log(`NEW SDK Channel 1<------ Receive data: ${HexUtil.arrayBufferToHex(characteristicValue)} , for: ${characteristicUuid} `)
+            // console.log(`NEW SDK Channel 1<------ Receive data: ${HexUtil.arrayBufferToHex(characteristicValue)} , for: ${characteristicUuid} `)
             this.commandManager.onDeviceResponse(1, characteristicValue);
           }
 
         })
-        //this.bleCharChangeSwitch = true;
+
         console.log('BluetoothPage bleCharacteristicChange ');
       }
     } catch (err) {
@@ -237,33 +236,33 @@ class BleManager {
     }
   }
 
-  /**
-   * client端读取蓝牙低功耗设备特定服务的特征值 (读取指定通道的特征)
-   */
-  private async readCharacteristicValue(
-    gatt: ble.GattClientDevice | null | undefined,
-    characteristic: ble.BLECharacteristic,
-  ): Promise<ArrayBuffer | null> {
-    return new Promise<ArrayBuffer | null>(async (resolve, reject) => {
-      if (!gatt) {
-        console.log('gatt is not available ');
-        resolve(null);
-      }
-
-      try {
-        if (gatt) {
-          const bleCharacteristicDataOut = await gatt.readCharacteristicValue(characteristic);
-          const characteristicValue: ArrayBuffer = bleCharacteristicDataOut.characteristicValue;
-          console.info(`NEW SDK readCharacteristicValue : ${HexUtil.arrayBufferToHex(characteristicValue)}, for: ${bleCharacteristicDataOut.characteristicUuid}`);
-          resolve(characteristicValue);
-        }
-      } catch (err) {
-        const errorMessage = 'Error occurred while reading characteristic value';
-        console.error(errorMessage + ', err: ', err);
-        reject(new Error(errorMessage));
-      }
-    });
-  }
+  // /**
+  //  * client端读取蓝牙低功耗设备特定服务的特征值 (读取指定通道的特征)
+  //  */
+  // private async readCharacteristicValue(
+  //   gatt: ble.GattClientDevice | null | undefined,
+  //   characteristic: ble.BLECharacteristic,
+  // ): Promise<ArrayBuffer | null> {
+  //   return new Promise<ArrayBuffer | null>(async (resolve, reject) => {
+  //     if (!gatt) {
+  //       console.log('gatt is not available ');
+  //       resolve(null);
+  //     }
+  //
+  //     try {
+  //       if (gatt) {
+  //         const bleCharacteristicDataOut = await gatt.readCharacteristicValue(characteristic);
+  //         const characteristicValue: ArrayBuffer = bleCharacteristicDataOut.characteristicValue;
+  //         console.info(`NEW SDK readCharacteristicValue : ${HexUtil.arrayBufferToHex(characteristicValue)}, for: ${bleCharacteristicDataOut.characteristicUuid}`);
+  //         resolve(characteristicValue);
+  //       }
+  //     } catch (err) {
+  //       const errorMessage = 'Error occurred while reading characteristic value';
+  //       console.error(errorMessage + ', err: ', err);
+  //       reject(new Error(errorMessage));
+  //     }
+  //   });
+  // }
 
   /**
    * 添加命令并执行

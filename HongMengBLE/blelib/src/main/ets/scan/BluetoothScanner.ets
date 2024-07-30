@@ -56,7 +56,6 @@ class BluetoothScanner{
       throw new Error('Failed to stop BLE scan');
     }
   }
-
 }
 
 export default BluetoothScanner;
