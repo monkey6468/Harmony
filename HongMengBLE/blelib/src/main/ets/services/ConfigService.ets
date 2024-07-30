@@ -8,30 +8,14 @@ export class ConfigService {
     this.deviceBleManager = deviceBleManager
   }
 
-  private async sendConfigCommand(
-    sendData: ArrayBuffer,
-    isReceiveFinish: ((checkData: ArrayBuffer | null, storedData: Uint8Array) => boolean) | null = null
-  ): Promise<ArrayBuffer> {
-
-    if (isReceiveFinish == null) {
-      isReceiveFinish = (checkData: ArrayBuffer | null, storedData: Uint8Array) => {
-        if (!checkData) {
-          return false
-        }
-        return true
-      }
-    }
-
-    return await this.deviceBleManager.writeUartRXCharacteristic(sendData, isReceiveFinish)
-  }
-
   /**
    * 写入声音配置
    * @param soundSetMsg
    * @returns
    */
   async writeSoundSetting(sendData: ArrayBuffer): Promise<boolean> {
-    const responseBytes = await this.sendConfigCommand(sendData)
-    return HexUtil.isCommandStatusSuccess(responseBytes) ?? false
+    let response = this.deviceBleManager.writeUartRXCharacteristic(sendData)
+    console.info('xwh22', JSON.stringify(response), response);
+    return response
   }
 }

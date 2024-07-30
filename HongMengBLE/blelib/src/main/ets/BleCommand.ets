@@ -8,16 +8,15 @@ import { TimeoutManager } from './TimeoutManager';
  */
 export class BleCommand {
   //保存设备返回的数据
-  isReceiveFinish: ((checkData: ArrayBuffer | null, storedData: Uint8Array) => boolean) | null = null;
   private gatt: ble.GattClientDevice | null;
   private serviceUuid: string;
   private data: ArrayBuffer;
   private timeout: number;
   private retries: number;
   private currentRetries: number = 0;
-  private resolve: ((value: ArrayBuffer | PromiseLike<ArrayBuffer>) => void) | null = null;
+  private resolve: ((value: boolean) => void) | null = null;
   private reject: ((reason?: object) => void) | null = null;
-  private promise: Promise<ArrayBuffer>;
+  private promise: Promise<boolean>;
   //发送超时定时器
   private sendTimeoutManager = new TimeoutManager();
   //接收超时定时器
@@ -64,15 +63,17 @@ export class BleCommand {
     }
   }
 
-  awaitResponse(): Promise<ArrayBuffer> {
-    return this.promise;
+  awaitResponse(): Promise<boolean> {
+    let response = this.promise
+    console.info('xwh44', JSON.stringify(response), response);
+    return response;
   }
 
   /**
    * 执行命令
    * @returns Promise<void>
    */
-  execute(): Promise<void> {
+  execute(): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       console.log('执行命令-> 开始')
       this.resolveFn = resolve;
@@ -102,7 +103,9 @@ export class BleCommand {
           this.retry()
         }
 
-        this.writeCharacteristicValue(this.data, this.gatt, characteristic);
+        let ret = await this.writeCharacteristicValue(this.data, this.gatt, characteristic);
+        console.info('xwh3', ret, JSON.stringify(ret));
+        return resolve(true)
       } catch (err) {
         reject(err);
       }
@@ -120,8 +123,8 @@ export class BleCommand {
     }
   }
 
-  success(responseData: ArrayBuffer) {
-    this.resolveFn();
+  success(responseData: boolean) {
+    this.resolveFn(true);
     if (this.resolve) {
       this.resolve(responseData);
     }
@@ -146,12 +149,12 @@ export class BleCommand {
         this.rejectFn(Error(`执行命令-> 命令在 ${this.timeout}ms 后超时`));
       }
     } else {
-      this.resolveFn();
+      this.resolveFn(true);
     }
   }
 
   // 用于标识命令是否完成的标志
-  private resolveFn: () => void = () => {
+  private resolveFn: (ret: boolean) => void = () => {
   };
   private rejectFn: (reason?: object) => void = () => {
   };
@@ -167,7 +170,7 @@ export class BleCommand {
     data: ArrayBuffer,
     gatt: ble.GattClientDevice | null,
     characteristic: ble.BLECharacteristic
-  ): Promise<void> {
+  ): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       try {
         if (gatt) {
@@ -182,7 +185,7 @@ export class BleCommand {
             console.log(`writeCharacteristicValue wrValue--> :  ${HexUtil.arrayBufferToHex(value)}`)
           }
           console.log('BluetoothPage writeCharacteristicValue finish');
-          resolve();
+          resolve(true);
         } else {
           reject(new Error('Gatt client device is null or undefined'));
         }

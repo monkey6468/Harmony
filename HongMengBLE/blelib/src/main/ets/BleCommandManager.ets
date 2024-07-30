@@ -36,7 +36,8 @@ export class BleCommandManager{
     this.waitingForResponse[channel] = true;
 
     try {
-      await command.execute();
+     let response = command.execute();
+      console.info('xwh77', JSON.stringify(response), response);
       console.log(`执行命令-> 通道 ${channel} 命令执行成功`);
     } catch (err) {
       console.error(`执行命令-> 通道 ${channel} 命令执行失败: ${err}`);

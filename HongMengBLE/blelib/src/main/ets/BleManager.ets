@@ -133,12 +133,12 @@ class BleManager {
    * @param data 要写入的数据
    * @returns Promise<void>
    */
-  async writeUartRXCharacteristic(data: ArrayBuffer, isReceiveFinish: ((checkData: ArrayBuffer | null,
-    storedData: Uint8Array) => boolean) | null): Promise<ArrayBuffer> {
+  async writeUartRXCharacteristic(data: ArrayBuffer): Promise<boolean> {
     const command = new BleCommand(this.gattClientDevice, UART_SERVICE_UUID, data);
-    command.isReceiveFinish = isReceiveFinish
     this.addCommand(1, command);
-    return command.awaitResponse()
+    let response = command.awaitResponse()
+    console.info('xwh55', JSON.stringify(response), response);
+    return response
   }
 
   /**
