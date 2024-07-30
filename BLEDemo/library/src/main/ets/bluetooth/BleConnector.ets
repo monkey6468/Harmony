@@ -61,6 +61,7 @@ export default class BleConnector {
         for (let i = 0; i < characteristics.length; i++) {
           if (characteristics[i].characteristicUuid == characteristicUUID) {
             this.mCharacteristic = characteristics[i];
+            console.info('xwh11' + JSON.stringify(this.mCharacteristic));
             break;
           }
         }
@@ -305,6 +306,8 @@ export default class BleConnector {
     console.info("BleConnetor.writeCharacteristic calling gatt.writeCharacteristic");
     if (this.mBluetoothGatt !== null) {
       try {
+        console.info('xwh14', JSON.stringify(this.mBluetoothGatt), JSON.stringify(this.mCharacteristic));
+
         this.mBluetoothGatt.writeCharacteristicValue(this.mCharacteristic, ble.GattWriteType.WRITE)
         if (bleWriteCallback != null) {
           this.writeMsgInit();
