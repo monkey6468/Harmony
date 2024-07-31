@@ -4,7 +4,6 @@ import { BusinessError } from '@kit.BasicServicesKit';
 
 import { BleManager } from '@ohos/blebib';
 import { DeviceConnectStatus } from '@ohos/blebib/src/main/ets/data/DeviceConnectStatus';
-import { util } from '@kit.ArkTS';
 import Util from '../utils/Util';
 
 @Entry
@@ -40,6 +39,29 @@ struct ClientDetail {
     this.bleManager.deviceConnectStatus.unsubscribe(this.deviceConnectStatusObserver)
   }
 
+  getConnectStateTitle(): string {
+    let title = ""
+    let connectionState = this.devConnectState
+    switch (connectionState) {
+      case 0:
+        title = "正在连接"
+        break
+      case 1:
+        title = "已连接"
+        break
+      case 2:
+        title = "正在断开连接"
+        break
+      case 3:
+        title = "已断开连接"
+        break
+      case 4:
+        title = "准备就绪"
+        break
+    }
+    return title
+  }
+
   build() {
     Scroll() {
       Column({ space: 10 }) {
@@ -51,7 +73,7 @@ struct ClientDetail {
 
         //连接状态
         Row() {
-          Text('连接状态')
+          Text('连接状态:' + this.getConnectStateTitle())
           Blank()
 
           if (this.devConnectState == DeviceConnectStatus.DeviceConnecting ||

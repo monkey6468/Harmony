@@ -6,8 +6,8 @@ import { ConfigService } from './services/ConfigService'
 import { HexUtil } from './utils/HexUtil'
 
 //通道1
-const UART_SERVICE_UUID = "0000FFD5-0000-1000-8000-00805F9B34FB"
-
+const SERVICE_UUIDS = ["FFD5"] // 智能灯
+// const SERVICE_UUIDS = ["FFF0"] // autophix设备
 
 class BleManager {
   //配置相关
@@ -78,20 +78,20 @@ class BleManager {
         console.log(`连接状态改变 state ${JSON.stringify(state)}`);
 
         switch (connectState) {
-          case constant.ProfileConnectionState.STATE_DISCONNECTED: // 设备已断开连接
+          case constant.ProfileConnectionState.STATE_DISCONNECTED: // 0设备已断开连接
             this.deviceConnectStatus.notify(DeviceConnectStatus.DeviceDisconnected);
             break;
 
-          case constant.ProfileConnectionState.STATE_CONNECTING: // 设备正在连接
+          case constant.ProfileConnectionState.STATE_CONNECTING: // 1设备正在连接
             this.deviceConnectStatus.notify(DeviceConnectStatus.DeviceConnecting);
             break;
 
-          case constant.ProfileConnectionState.STATE_CONNECTED: // 设备已连接
+          case constant.ProfileConnectionState.STATE_CONNECTED: // 2设备已连接
             this.deviceConnectStatus.notify(DeviceConnectStatus.DeviceConnected);
             this.getServices();
             break;
 
-          case constant.ProfileConnectionState.STATE_DISCONNECTING: // 设备正在断开连接
+          case constant.ProfileConnectionState.STATE_DISCONNECTING: // 3设备正在断开连接
             this.deviceConnectStatus.notify(DeviceConnectStatus.DeviceDisconnecting);
             break;
 
@@ -131,14 +131,15 @@ class BleManager {
    */
   async writeUartRXCharacteristic(data: ArrayBuffer): Promise<boolean> {
     let gattServiceList = await this.gattClientDevice?.getServices()
-    const service = gattServiceList!.find(s => s.serviceUuid === UART_SERVICE_UUID);
+    const service = gattServiceList!.find(s => s.serviceUuid.indexOf(SERVICE_UUIDS[0]) != -1);
     if (!service) {
-      // return reject(`执行命令-> 未找到服务 ${UART_SERVICE_UUID}`);
+      console.log(`执行命令-> 未找到服务 ${SERVICE_UUIDS[0]}`);
       return false
     }
     const characteristic = service.characteristics.find(c => c.properties?.write);
     if (!characteristic) {
-      return false //reject(`执行命令-> 未找到特征`);
+      console.log(`执行命令-> 未找到特征`);
+      return false
     }
 
     let response = this.writeCharacteristicValue(data, this.gattClientDevice, characteristic)
