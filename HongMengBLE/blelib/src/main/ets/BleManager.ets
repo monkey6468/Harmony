@@ -1,7 +1,6 @@
 import { ble, constant } from '@kit.ConnectivityKit'
 import { BusinessError } from '@kit.BasicServicesKit'
 import Observable from './utils/Observable'
-import { ConfigService } from './services/ConfigService'
 import { HexUtil } from './utils/HexUtil'
 import { DeviceConnectStatus } from './scan/BluetoothScanner'
 
@@ -10,8 +9,6 @@ const SERVICE_UUIDS = ["FFD5"] // 智能灯
 // const SERVICE_UUIDS = ["FFF0"] // autophix设备
 
 class BleManager {
-  //配置相关
-  configService = new ConfigService(this);
   //设备连接状态
   deviceConnectStatus = new Observable<DeviceConnectStatus>();
   //Gatt 客户端设备实例
@@ -130,8 +127,8 @@ class BleManager {
    * @returns Promise<void>
    */
   async writeUartRXCharacteristic(data: ArrayBuffer): Promise<boolean> {
-    let gattServiceList = await this.gattClientDevice?.getServices()
-    const service = gattServiceList!.find(s => s.serviceUuid.indexOf(SERVICE_UUIDS[0]) != -1);
+    let gattServiceList = await this.gattClientDevice!.getServices()
+    const service = gattServiceList.find(s => s.serviceUuid.indexOf(SERVICE_UUIDS[0]) != -1);
     if (!service) {
       console.log(`执行命令-> 未找到服务 ${SERVICE_UUIDS[0]}`);
       return false
@@ -259,6 +256,8 @@ class BleManager {
   private onBleCharacteristicChange() {
     try {
       if (this.gattClientDevice) {
+        console.info('onBleCharacteristicChange');
+
         //监听
         this.gattClientDevice.on('BLECharacteristicChange', (characteristicChangeReq: ble.BLECharacteristic) => {
           console.log('xwh bleCharacteristicChange', JSON.stringify(characteristicChangeReq));

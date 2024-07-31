@@ -107,7 +107,7 @@ struct ClientDetail {
             let uint8Array = new Uint8Array([0xff, 0x07, 0xf0, 0x32, 0xfe]);
             let sendData = Util.typedArrayToBuffer(uint8Array)
 
-            this.bleManager.configService.writeSoundSetting(sendData)
+            this.bleManager.writeUartRXCharacteristic(sendData)
               .then((response: Boolean) => {
                 console.log(`xwh RX Characteristic write end response:${response} `)
                 //提示写入成功
@@ -130,7 +130,7 @@ struct ClientDetail {
             let uint8Array = new Uint8Array([0xff, 0x07, 0x0f, 0x32, 0xfe]);
             let sendData = Util.typedArrayToBuffer(uint8Array)
 
-            this.bleManager.configService.writeSoundSetting(sendData)
+            this.bleManager.writeUartRXCharacteristic(sendData)
               .then((response: Boolean) => {
                 console.log(`xwh RX Characteristic write end response:${response} `)
                 //提示写入成功
@@ -152,7 +152,7 @@ struct ClientDetail {
             let uint8Array = new Uint8Array([0x24, 0x2a, 0x2b, 0x42]);
             let sendData = Util.typedArrayToBuffer(uint8Array)
 
-            this.bleManager.configService.writeSoundSetting(sendData)
+            this.bleManager.writeUartRXCharacteristic(sendData)
               .then((response: Boolean) => {
                 console.log(`xwh RX Characteristic write end response:${response} `)
                 //提示写入成功
