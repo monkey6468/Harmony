@@ -1,10 +1,9 @@
 import { ble, constant } from '@kit.ConnectivityKit'
 import { BusinessError } from '@kit.BasicServicesKit'
-import { BleCommandManager } from './BleCommandManager'
-import { BleCommand } from './BleCommand'
 import { DeviceConnectStatus } from './data/DeviceConnectStatus'
 import Observable from './utils/Observable'
 import { ConfigService } from './services/ConfigService'
+import { HexUtil } from './utils/HexUtil'
 
 //通道1
 const UART_SERVICE_UUID = "0000FFD5-0000-1000-8000-00805F9B34FB"
@@ -13,15 +12,12 @@ const UART_SERVICE_UUID = "0000FFD5-0000-1000-8000-00805F9B34FB"
 class BleManager {
   //配置相关
   configService = new ConfigService(this);
-
   //设备连接状态
   deviceConnectStatus = new Observable<DeviceConnectStatus>();
-  private commandManager: BleCommandManager;
   //Gatt 客户端设备实例
   private gattClientDevice: ble.GattClientDevice | null = null;
 
   private constructor() {
-    this.commandManager = new BleCommandManager();
   }
 
   public static create(): BleManager {
@@ -134,11 +130,59 @@ class BleManager {
    * @returns Promise<void>
    */
   async writeUartRXCharacteristic(data: ArrayBuffer): Promise<boolean> {
-    const command = new BleCommand(this.gattClientDevice, UART_SERVICE_UUID, data);
-    this.addCommand(1, command);
-    let response = command.awaitResponse()
-    console.info('xwh55', JSON.stringify(response), response);
+    let gattServiceList = await this.gattClientDevice?.getServices()
+    const service = gattServiceList!.find(s => s.serviceUuid === UART_SERVICE_UUID);
+    if (!service) {
+      // return reject(`执行命令-> 未找到服务 ${UART_SERVICE_UUID}`);
+      return false
+    }
+    const characteristic = service.characteristics.find(c => c.properties?.write);
+    if (!characteristic) {
+      return false //reject(`执行命令-> 未找到特征`);
+    }
+
+    let response = this.writeCharacteristicValue(data, this.gattClientDevice, characteristic)
     return response
+  }
+
+  /**
+   * 写入特征值
+   * @param data 要写入的数据
+   * @param gatt Gatt 客户端设备实例
+   * @param characteristic 特征实例
+   * @returns Promise<void>
+   */
+  private writeCharacteristicValue(
+    data: ArrayBuffer,
+    gatt: ble.GattClientDevice | null,
+    characteristic: ble.BLECharacteristic
+  ): Promise<boolean> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        if (gatt) {
+          console.log('BluetoothPage writeCharacteristicValue', JSON.stringify(characteristic));
+
+          // 根据 MTUSize 分包
+          const arrayBuffer = HexUtil.splitArrayBuffer(data, 20);
+          for (let i = 0; i < arrayBuffer.length; i++) {
+            const value = arrayBuffer[i]
+            characteristic.characteristicValue = value
+            gatt.writeCharacteristicValue(characteristic, ble.GattWriteType.WRITE);
+            console.log(`writeCharacteristicValue wrValue--> :  ${HexUtil.arrayBufferToHex(value)}`)
+          }
+          console.log('BluetoothPage writeCharacteristicValue finish');
+          resolve(true);
+        } else {
+          reject(new Error('Gatt client device is null or undefined'));
+        }
+      } catch (err) {
+        const errorCode = (err as BusinessError).code;
+        const errorMessage = (err as BusinessError).message;
+        console.error('errCode: ' + errorCode + ', errMessage: ' + errorMessage);
+        reject(new Error(`errCode: ${errorCode}, errMessage: ${errorMessage}`));
+      }
+
+    });
   }
 
   /**
@@ -216,19 +260,8 @@ class BleManager {
       if (this.gattClientDevice) {
         //监听
         this.gattClientDevice.on('BLECharacteristicChange', (characteristicChangeReq: ble.BLECharacteristic) => {
-          let serviceUuid: string = characteristicChangeReq.serviceUuid;
-          let characteristicUuid: string = characteristicChangeReq.characteristicUuid;
-          const characteristicValue = characteristicChangeReq.characteristicValue
-
-          //通道1
-          if (serviceUuid == UART_SERVICE_UUID) {
-            // console.log(`Channel 1<------ Receive data: ${HexUtil.arrayBufferToHex(characteristicValue)} , for: ${characteristicUuid} `)
-            this.commandManager.onDeviceResponse(1, characteristicValue);
-          }
-
+          console.log('BluetoothPage bleCharacteristicChange', JSON.stringify(characteristicChangeReq));
         })
-
-        console.log('BluetoothPage bleCharacteristicChange ');
       }
     } catch (err) {
       console.error('bleCharacteristicChange errCode: ' + (err as BusinessError).code + ', errMessage: ' +
@@ -263,15 +296,6 @@ class BleManager {
   //     }
   //   });
   // }
-
-  /**
-   * 添加命令并执行
-   * @param channel 通道编号
-   * @param command 命令实例
-   */
-  private addCommand(channel: number, command: BleCommand) {
-    this.commandManager.addCommand(channel, command);
-  }
 }
 
 export default BleManager;

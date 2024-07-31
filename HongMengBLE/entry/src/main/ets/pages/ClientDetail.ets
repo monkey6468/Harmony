@@ -87,12 +87,12 @@ struct ClientDetail {
 
             this.bleManager.configService.writeSoundSetting(sendData)
               .then((response: Boolean) => {
-                console.log(`UART RX Characteristic write end response:${response} `)
+                console.log(`xwh RX Characteristic write end response:${response} `)
                 //提示写入成功
-                promptAction.showToast({ message: '写入成功' })
+                promptAction.showToast({ message: `写入成功:${response}` })
               })
               .catch((error: Error) => {
-                console.error('UART RX Characteristic write failed:', error.message);
+                console.error('xwh RX Characteristic write failed:', error.message);
                 //提示写入失败
                 promptAction.showToast({ message: '写入失败' })
               })
@@ -110,12 +110,12 @@ struct ClientDetail {
 
             this.bleManager.configService.writeSoundSetting(sendData)
               .then((response: Boolean) => {
-                console.log(`UART RX Characteristic write end response:${response} `)
+                console.log(`xwh RX Characteristic write end response:${response} `)
                 //提示写入成功
-                promptAction.showToast({ message: '写入成功' })
+                promptAction.showToast({ message: `写入成功:${response}` })
               })
               .catch((error: Error) => {
-                console.error('UART RX Characteristic write failed:', error.message);
+                console.error('xwh RX Characteristic write failed:', error.message);
                 //提示写入失败
                 promptAction.showToast({ message: '写入失败' })
               })
