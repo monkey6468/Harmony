@@ -5,7 +5,10 @@ import { HexUtil } from './utils/HexUtil'
 import { DeviceConnectStatus } from './scan/BluetoothScanner'
 
 //通道1
-const SERVICE_UUIDS = ["FFD5"] // 智能灯
+// 智能灯
+const SERVICE_UUID = "FFD5" // 查找设备
+const SERVICE_UUID_NOTIFY = "FFD0" // 通知
+
 // const SERVICE_UUIDS = ["FFF0"] // autophix设备
 
 class BleManager {
@@ -128,9 +131,9 @@ class BleManager {
    */
   async writeUartRXCharacteristic(data: ArrayBuffer): Promise<boolean> {
     let gattServiceList = await this.gattClientDevice!.getServices()
-    const service = gattServiceList.find(s => s.serviceUuid.indexOf(SERVICE_UUIDS[0]) != -1);
+    const service = gattServiceList.find(s => s.serviceUuid.indexOf(SERVICE_UUID) != -1);
     if (!service) {
-      console.log(`执行命令-> 未找到服务 ${SERVICE_UUIDS[0]}`);
+      console.log(`执行命令-> 未找到服务 ${SERVICE_UUID}`);
       return false
     }
     const characteristic = service.characteristics.find(c => c.properties?.write);
@@ -191,23 +194,32 @@ class BleManager {
       const result: Array<ble.GattService> = await this.gattClientDevice.getServices();
       console.info('getServices successfully:' + JSON.stringify(result));
 
-      // let gatt = this.gattClientDevice;
+      let gatt = this.gattClientDevice;
 
-      // for (const item of result) {
-      //   // 通道1
-      //   if (item.serviceUuid === UART_SERVICE_UUID) {
-      //     for (let characteristic of item.characteristics) {
-      //       console.log(`getServices 通道1 characteristic = '${characteristic?.characteristicUuid}'`);
-      //       // setNotification
-      //       const success = await this.setNotificationChannel(gatt, item, characteristic, true);
-      //       if (success) {
-      //         console.log(`Notification set successfully for characteristic（通道1） ${characteristic.characteristicUuid}`);
-      //       } else {
-      //         console.log(`Failed to set notification for characteristic（通道1） ${characteristic.characteristicUuid}`);
-      //       }
-      //     }
-      //   }
-      // }
+      for (const item of result) {
+        // 通道1
+        if (item.serviceUuid.indexOf(SERVICE_UUID_NOTIFY) != -1) {
+          let characteristic =
+            item.characteristics[0] //item.characteristics.find(v=>v.characteristicUuid.indexOf("FFDA") != -1)
+          console.log(`getServices 通道1 characteristic = '${characteristic?.characteristicUuid}'`);
+          const success = await this.setNotificationChannel(gatt, item, characteristic!, true);
+          if (success) {
+            console.log(`Notification set successfully for characteristic（通道1） ${characteristic!.characteristicUuid}`);
+          } else {
+            console.log(`Failed to set notification for characteristic（通道1） ${characteristic!.characteristicUuid}`);
+          }
+          // for (let characteristic of item.characteristics) {
+          //   console.log(`getServices 通道1 characteristic`, JSON.stringify(item.characteristics));
+          //   // setNotification
+          //   const success = await this.setNotificationChannel(gatt, item, characteristic, true);
+          //   if (success) {
+          //     console.log(`Notification set successfully for characteristic（通道1） ${characteristic.characteristicUuid}`);
+          //   } else {
+          //     console.log(`Failed to set notification for characteristic（通道1） ${characteristic.characteristicUuid}`);
+          //   }
+          // }
+        }
+      }
 
       //接收设备数据
       this.onBleCharacteristicChange()
@@ -220,35 +232,35 @@ class BleManager {
   /**
    * 向服务端发送设置通知此indicate征值请求
    */
-  // private async setNotificationChannel(
-  //   gatt: ble.GattClientDevice | null,
-  //   gattService: ble.GattService | undefined,
-  //   characteristic: ble.BLECharacteristic,
-  //   enable: boolean
-  // ): Promise<boolean> {
-  //   if (!gattService) {
-  //     console.log('bluetooth gattServiceInfo is undefined ');
-  //     return false; // 返回失败
-  //   }
-  //
-  //   if (gatt == null) {
-  //     console.log('gatt is null')
-  //     return false; // 返回失败
-  //   }
-  //
-  //   try {
-  //     if (gatt) {
-  //       console.log(`setNotificationChannel characteristic UUID: ${characteristic.characteristicUuid}, enable: ${enable}`);
-  //       await gatt?.setCharacteristicChangeNotification(characteristic, enable)
-  //       console.log('BluetoothPage setCharacteristicChangeNotification finish');
-  //       return true; // 返回成功
-  //     }
-  //   } catch (err) {
-  //     console.error('errCode: ' + (err as BusinessError).code + ', errMessage: ' + (err as BusinessError).message);
-  //     return false; // 返回失败
-  //   }
-  //   return false; // 如果没有gatt，返回失败
-  // }
+  private async setNotificationChannel(
+    gatt: ble.GattClientDevice | null,
+    gattService: ble.GattService | undefined,
+    characteristic: ble.BLECharacteristic,
+    enable: boolean
+  ): Promise<boolean> {
+    if (!gattService) {
+      console.log('bluetooth gattServiceInfo is undefined ');
+      return false; // 返回失败
+    }
+
+    if (gatt == null) {
+      console.log('gatt is null')
+      return false; // 返回失败
+    }
+
+    try {
+      if (gatt) {
+        console.log(`setNotificationChannel characteristic UUID: ${characteristic.characteristicUuid}, enable: ${enable}`);
+        await gatt?.setCharacteristicChangeNotification(characteristic, enable)
+        console.log('BluetoothPage setCharacteristicChangeNotification finish');
+        return true; // 返回成功
+      }
+    } catch (err) {
+      console.error('errCode: ' + (err as BusinessError).code + ', errMessage: ' + (err as BusinessError).message);
+      return false; // 返回失败
+    }
+    return false; // 如果没有gatt，返回失败
+  }
 
   /**
    * 订阅蓝牙低功耗设备的特征值变化事件 (接收消息)
@@ -256,11 +268,11 @@ class BleManager {
   private onBleCharacteristicChange() {
     try {
       if (this.gattClientDevice) {
-        console.info('onBleCharacteristicChange');
-
         //监听
         this.gattClientDevice.on('BLECharacteristicChange', (characteristicChangeReq: ble.BLECharacteristic) => {
-          console.log('xwh bleCharacteristicChange', JSON.stringify(characteristicChangeReq));
+          const characteristicValue = characteristicChangeReq.characteristicValue
+
+          console.log('xwh11', characteristicValue, HexUtil.arrayBufferToHex(characteristicValue));
         })
       }
     } catch (err) {
