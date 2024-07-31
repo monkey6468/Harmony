@@ -6,10 +6,12 @@ import { DeviceConnectStatus } from './scan/BluetoothScanner'
 
 //通道1
 // 智能灯
-const SERVICE_UUID = "FFD5" // 查找设备
-const SERVICE_UUID_NOTIFY = "FFD0" // 通知
+// const SERVICE_UUID = "FFD5" // 写数据
+// const SERVICE_UUID_NOTIFY = "FFD0" // 通知
 
-// const SERVICE_UUID = "FFF0" // autophix设备
+// autophix
+const SERVICE_UUID = "FFF0" // 写数据
+const SERVICE_UUID_NOTIFY = "FFF0" // 通知
 
 class BleManager {
   //设备连接状态

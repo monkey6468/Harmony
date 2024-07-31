@@ -149,7 +149,8 @@ struct ClientDetail {
         Row() {
           Button('查询定时器').onClick(() => {
 
-            let uint8Array = new Uint8Array([0x24, 0x2a, 0x2b, 0x42]);
+            // let uint8Array = new Uint8Array([0x24, 0x2a, 0x2b, 0x42]);
+            let uint8Array = new Uint8Array([128, 0, 2, 1, 1, 132]);
             let sendData = Util.typedArrayToBuffer(uint8Array)
 
             this.bleManager.writeUartRXCharacteristic(sendData)
