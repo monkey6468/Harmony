@@ -96,7 +96,6 @@ class BleManager {
             break;
 
           default:
-          // Handle unexpected states if necessary
             break;
         }
 
@@ -119,7 +118,6 @@ class BleManager {
   disconnect() {
     const gattClient = this.gattClientDevice
     if (gattClient) {
-      //gattClient.off('BLEConnectionStateChange')
       gattClient.disconnect()
     }
   }
@@ -196,29 +194,14 @@ class BleManager {
 
       let gatt = this.gattClientDevice;
 
-      for (const item of result) {
-        // 通道1
-        if (item.serviceUuid.indexOf(SERVICE_UUID_NOTIFY) != -1) {
-          let characteristic =
-            item.characteristics[0] //item.characteristics.find(v=>v.characteristicUuid.indexOf("FFDA") != -1)
-          console.log(`getServices 通道1 characteristic = '${characteristic?.characteristicUuid}'`);
-          const success = await this.setNotificationChannel(gatt, item, characteristic!, true);
-          if (success) {
-            console.log(`Notification set successfully for characteristic（通道1） ${characteristic!.characteristicUuid}`);
-          } else {
-            console.log(`Failed to set notification for characteristic（通道1） ${characteristic!.characteristicUuid}`);
-          }
-          // for (let characteristic of item.characteristics) {
-          //   console.log(`getServices 通道1 characteristic`, JSON.stringify(item.characteristics));
-          //   // setNotification
-          //   const success = await this.setNotificationChannel(gatt, item, characteristic, true);
-          //   if (success) {
-          //     console.log(`Notification set successfully for characteristic（通道1） ${characteristic.characteristicUuid}`);
-          //   } else {
-          //     console.log(`Failed to set notification for characteristic（通道1） ${characteristic.characteristicUuid}`);
-          //   }
-          // }
-        }
+      let gattService = result.find((v:ble.GattService) => v.serviceUuid.indexOf(SERVICE_UUID_NOTIFY) != -1) as ble.GattService
+      let characteristic = gattService.characteristics.find((v) => v.properties?.notify == true) as ble.BLECharacteristic
+      // gattService.characteristics
+      const success = await this.setNotificationChannel(gatt, gattService, characteristic, true);
+      if (success) {
+        console.log(`Notification set successfully for characteristic（通道1） ${characteristic.characteristicUuid}`);
+      } else {
+        console.log(`Failed to set notification for characteristic（通道1） ${characteristic.characteristicUuid}`);
       }
 
       //接收设备数据
