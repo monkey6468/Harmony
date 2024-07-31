@@ -12,7 +12,7 @@ class PermissionsUtil {
    * @param permissions
    * @returns
    */
-  async checkPermissions(permissions: Array<Permissions>): Promise<void> {
+  async checkPermissions(permissions: Array<Permissions>, callback: (data: PermissionRequestResult | null, err: BusinessError | null) => void): Promise<void> {
     let applyResult: boolean = false;
     for (let permission of permissions) {
       let grantStatus: abilityAccessCtrl.GrantStatus = await this.checkAccessToken(permission);
@@ -23,7 +23,9 @@ class PermissionsUtil {
       }
     }
     if (!applyResult) {
-      this.requestPermissions(permissions);
+      this.requestPermissions(permissions, (data, err) => {
+        callback(data, err)
+      });
     }
   }
 
@@ -34,7 +36,8 @@ class PermissionsUtil {
     // 获取应用程序的accessTokenID
     let tokenId: number = 0;
     try {
-      let bundleInfo: bundleManager.BundleInfo = await bundleManager.getBundleInfoForSelf(bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION);
+      let bundleInfo: bundleManager.BundleInfo =
+        await bundleManager.getBundleInfoForSelf(bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION);
       let appInfo: bundleManager.ApplicationInfo = bundleInfo.appInfo;
       tokenId = appInfo.accessTokenId;
     } catch (error) {
@@ -57,14 +60,17 @@ class PermissionsUtil {
    * 申请用户授权
    * @param permissions
    */
-  requestPermissions(permissions: Array<Permissions>): void {
+  requestPermissions(permissions: Array<Permissions>,
+    callback: (data: PermissionRequestResult | null, err: BusinessError | null) => void): void {
     let atManager: abilityAccessCtrl.AtManager = abilityAccessCtrl.createAtManager();
     atManager.requestPermissionsFromUser(getContext() as common.UIAbilityContext, permissions)
       .then((data: PermissionRequestResult) => {
         console.info('request Permissions success')
+        callback(data, null);
       })
       .catch((err: BusinessError) => {
         console.error(`Failed to request permissions from user. Code is ${err.code}, message is ${err.message}`);
+        callback(null, err);
       })
   }
 }

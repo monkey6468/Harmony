@@ -260,7 +260,7 @@ class BleManager {
       if (this.gattClientDevice) {
         //监听
         this.gattClientDevice.on('BLECharacteristicChange', (characteristicChangeReq: ble.BLECharacteristic) => {
-          console.log('BluetoothPage bleCharacteristicChange', JSON.stringify(characteristicChangeReq));
+          console.log('xwh bleCharacteristicChange', JSON.stringify(characteristicChangeReq));
         })
       }
     } catch (err) {
