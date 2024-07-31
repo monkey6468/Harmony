@@ -3,8 +3,8 @@ import { promptAction, router } from '@kit.ArkUI';
 import { BusinessError } from '@kit.BasicServicesKit';
 
 import { BleManager } from '@ohos/blebib';
-import { DeviceConnectStatus } from '@ohos/blebib/src/main/ets/data/DeviceConnectStatus';
 import Util from '../utils/Util';
+import { DeviceConnectStatus } from '@ohos/blebib/src/main/ets/scan/BluetoothScanner';
 
 @Entry
 @Component
@@ -146,6 +146,27 @@ struct ClientDetail {
             .width('100%')
         }
 
+        Row() {
+          Button('查询定时器').onClick(() => {
+
+            let uint8Array = new Uint8Array([0x24, 0x2a, 0x2b, 0x42]);
+            let sendData = Util.typedArrayToBuffer(uint8Array)
+
+            this.bleManager.configService.writeSoundSetting(sendData)
+              .then((response: Boolean) => {
+                console.log(`xwh RX Characteristic write end response:${response} `)
+                //提示写入成功
+                promptAction.showToast({ message: `写入成功:${response}` })
+              })
+              .catch((error: Error) => {
+                console.error('xwh RX Characteristic write failed:', error.message);
+                //提示写入失败
+                promptAction.showToast({ message: '写入失败' })
+              })
+          })
+            .type(ButtonType.Normal)
+            .width('100%')
+        }
       }
       .width('100%')
       .padding({

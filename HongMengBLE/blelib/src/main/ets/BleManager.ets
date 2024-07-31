@@ -1,9 +1,9 @@
 import { ble, constant } from '@kit.ConnectivityKit'
 import { BusinessError } from '@kit.BasicServicesKit'
-import { DeviceConnectStatus } from './data/DeviceConnectStatus'
 import Observable from './utils/Observable'
 import { ConfigService } from './services/ConfigService'
 import { HexUtil } from './utils/HexUtil'
+import { DeviceConnectStatus } from './scan/BluetoothScanner'
 
 //通道1
 const SERVICE_UUIDS = ["FFD5"] // 智能灯
