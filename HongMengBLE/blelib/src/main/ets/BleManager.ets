@@ -9,7 +9,7 @@ import { DeviceConnectStatus } from './scan/BluetoothScanner'
 const SERVICE_UUID = "FFD5" // 查找设备
 const SERVICE_UUID_NOTIFY = "FFD0" // 通知
 
-// const SERVICE_UUIDS = ["FFF0"] // autophix设备
+// const SERVICE_UUID = "FFF0" // autophix设备
 
 class BleManager {
   //设备连接状态
@@ -73,7 +73,6 @@ class BleManager {
 
       //连接状态
       clientDevice.on('BLEConnectionStateChange', (state: ble.BLEConnectionChangeState) => {
-        //let deviceId = state.deviceId;
         const connectState = state.state;
         console.log(`连接状态改变 state ${JSON.stringify(state)}`);
 
@@ -123,7 +122,6 @@ class BleManager {
   }
 
   /**
-   * 通道1 写特征
    * @param data 要写入的数据
    * @returns Promise<void>
    */
@@ -254,8 +252,7 @@ class BleManager {
         //监听
         this.gattClientDevice.on('BLECharacteristicChange', (characteristicChangeReq: ble.BLECharacteristic) => {
           const characteristicValue = characteristicChangeReq.characteristicValue
-
-          console.log('xwh11', characteristicValue, HexUtil.arrayBufferToHex(characteristicValue));
+          console.log('xwh11', new Uint8Array(characteristicValue), HexUtil.arrayBufferToHex(characteristicValue));
         })
       }
     } catch (err) {
