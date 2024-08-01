@@ -46,8 +46,8 @@
       ]
     },
     {
-      "name": "blelib",
-      "srcPath": "./blelib"
+      "name": "BLELib",
+      "srcPath": "./BLELib"
     }
   ]
 }
