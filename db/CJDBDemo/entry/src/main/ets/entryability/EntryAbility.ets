@@ -1,12 +1,11 @@
 import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
-import { DeviceDBManger } from '../pages/FreezeModel';
+import { DBManger } from '../pages/DBManger';
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam) {
-
-    DeviceDBManger.shared(this.context)
+    DBManger.shared(this.context)
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
   }
 

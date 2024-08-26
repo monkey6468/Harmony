@@ -1,4 +1,5 @@
-import FreezeModel, { DeviceDBManger } from './FreezeModel';
+import { DBManger } from './DBManger';
+import FreezeModel from './FreezeModel';
 import { PidsModel } from './PidsModel';
 
 @Entry
@@ -10,15 +11,15 @@ struct Index {
     Column({ space: 20 }) {
       Button("get All")
         .onClick(() => {
-          DeviceDBManger.getAll( (data) => {
-            // console.log("xwh", data.length, JSON.stringify(data))
-            if (data.length> 0) {
+          DBManger.getAll(FreezeModel, (data) => {
+            if (data.length > 0) {
               let model = data[0] as FreezeModel
               let model2 = FreezeModel.clone(model)
-              let pids2 =  model2.freezeModels
+              let pids2 = model2.freezeModels
               console.log("xwh2", pids2)
               console.log("xwh3", model.freezeModelsJson)
             }
+            console.log("xwh", data.length, JSON.stringify(data))
           })
         })
       Button("insert")
@@ -50,14 +51,14 @@ struct Index {
 
           console.log("xwh4", model.freezeModels)
 
-          DeviceDBManger.insert(model)
+          DBManger.insert(model)
         })
 
       Button("Delete")
         .onClick(() => {
           let model: FreezeModel = new FreezeModel();
           model.id = 1
-          DeviceDBManger.delete(model)
+          DBManger.delete(model, FreezeModel.name)
         })
 
       Button("Update")
@@ -66,7 +67,7 @@ struct Index {
           model.id = 2
           model.makeName = 'John111';
           model.vin = "2544";
-          DeviceDBManger.update(model)
+          DBManger.update(model, FreezeModel.name)
         })
     }.width('100%')
     .height('100%')
