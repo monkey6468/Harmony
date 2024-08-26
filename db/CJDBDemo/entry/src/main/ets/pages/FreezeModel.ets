@@ -12,9 +12,6 @@ import {
 import { relationalStore } from '@kit.ArkData';
 import { PidsModel } from './PidsModel';
 
-// 参考使用：
-// https://ohpm.openharmony.cn/#/cn/detail/cjdb
-
 // @Table("FreezeModel") // @Table("表名")
 // @Observed // 如果同时使用多注解，请将@Table() 放在最后，紧跟class
 @Table("FreezeModel")

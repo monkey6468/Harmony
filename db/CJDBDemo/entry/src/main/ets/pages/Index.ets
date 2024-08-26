@@ -9,19 +9,6 @@ struct Index {
 
   build() {
     Column({ space: 20 }) {
-      Button("get All")
-        .onClick(() => {
-          DBManger.getAll(FreezeModel, (data) => {
-            if (data.length > 0) {
-              let model = data[0] as FreezeModel
-              let model2 = FreezeModel.clone(model)
-              let pids2 = model2.freezeModels
-              console.log("xwh2", pids2)
-              console.log("xwh3", model.freezeModelsJson)
-            }
-            console.log("xwh", data.length, JSON.stringify(data))
-          })
-        })
       Button("insert")
         .onClick(() => {
           console.log('xwh Hello World');
@@ -48,26 +35,46 @@ struct Index {
             },]
 
           model.freezeModelsJson = JSON.stringify(pids)
-
-          console.log("xwh4", model.freezeModels)
-
           DBManger.insert(model)
         })
 
-      Button("Delete")
+      Button("delete")
         .onClick(() => {
           let model: FreezeModel = new FreezeModel();
           model.id = 1
-          DBManger.delete(model, FreezeModel.name)
+          DBManger.delete(model, FreezeModel)
         })
 
-      Button("Update")
+      Button("update")
         .onClick(() => {
           let model: FreezeModel = new FreezeModel();
           model.id = 2
           model.makeName = 'John111';
           model.vin = "2544";
-          DBManger.update(model, FreezeModel.name)
+          DBManger.update(model, FreezeModel)
+        })
+
+      Button("get all")
+        .onClick(() => {
+          DBManger.getAll(FreezeModel, (data) => {
+            if (data.length > 0) {
+              let model = data[0] as FreezeModel
+              let modelCopy = FreezeModel.clone(model)
+              let pids = modelCopy.freezeModels
+              console.log("xwh2", pids)
+              console.log("xwh3", model.freezeModelsJson)
+            }
+            console.log("xwh", data.length, JSON.stringify(data))
+          })
+        })
+      Button("clean data")
+        .onClick(() => {
+          DBManger.cleanData(FreezeModel)
+        })
+
+      Button("drop table(⚠️)")
+        .onClick(() => {
+          DBManger.dropTable(FreezeModel)
         })
     }.width('100%')
     .height('100%')

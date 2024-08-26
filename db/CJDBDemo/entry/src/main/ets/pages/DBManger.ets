@@ -3,6 +3,8 @@ import { relationalStore } from '@kit.ArkData'
 
 let TAG: string = "xwh"
 
+// 参考使用：
+// https://ohpm.openharmony.cn/#/cn/detail/cjdb
 export class DBManger {
   static async shared(context: Context) {
     await CJDBUtil.init({
@@ -21,8 +23,8 @@ export class DBManger {
       })
   }
 
-  static delete(model: object, tableName: string) {
-    CJDBUtil.delete(tableName, [
+  static delete(model: object, cls: object) {
+    CJDBUtil.delete(Object(cls).name, [
       new Condition('id', OperatorType.EQUAL_TO, `${(Object(model)).id}`)
     ])
       .then(results => {
@@ -33,8 +35,8 @@ export class DBManger {
       })
   }
 
-  static update(model: object, tableName: string) {
-    CJDBUtil.update(tableName, model, [
+  static update(model: object, cls: object) {
+    CJDBUtil.update(Object(cls).name, model, [
       new Condition('id', OperatorType.EQUAL_TO, `${(Object(model)).id}`)
     ])
       .then(ids => {
@@ -45,13 +47,34 @@ export class DBManger {
       })
   }
 
-  static async getAll(model: object, block?: (value: object[]) => void) {
-    CJDBUtil.all<object>(Object(model).name)
+  static async getAll(cls: object, block?: (value: object[]) => void) {
+    CJDBUtil.all<object>(Object(cls).name)
       .then((data) => {
         block && block(data)
         console.info(TAG, "获取全部成功")
       }).catch(() => {
       console.error(TAG, "获取全部异常")
     });
+  }
+
+  static cleanData(cls: object) {
+    let sql = `DELETE FROM ${Object(cls).name}`
+    console.info(TAG, "dropTable", sql)
+    CJDBUtil.executeSql(sql, [])
+      .then(() => {
+        console.info(TAG, "清除数据成功")
+      }).catch(() => {
+      console.error(TAG, "清除数据异常")
+    })
+  }
+
+  static dropTable(cls: object) {
+    let sql = `DROP TABLE IF EXISTS ${Object(cls).name}`
+    CJDBUtil.executeSql(sql, [])
+      .then(() => {
+        console.info(TAG, "删除表成功")
+      }).catch(() => {
+      console.error(TAG, "删除表异常")
+    })
   }
 }
