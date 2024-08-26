@@ -8,10 +8,10 @@ import {
 } from 'cjdb';
 import { PidsModel } from './PidsModel';
 
-// @Table("FreezeModel") // @Table("表名")
+// @Table("TestModel") // @Table("表名")
 // @Observed // 如果同时使用多注解，请将@Table() 放在最后，紧跟class
-@Table("FreezeModel")
-export default class FreezeModel extends CJBaseModel {
+@Table("TestModel")
+export default class TestModel extends CJBaseModel {
   @Id({ types: ColumnType.INTEGER })
   id?: number
   @Columns({ types: ColumnType.TEXT })
@@ -23,16 +23,16 @@ export default class FreezeModel extends CJBaseModel {
   @Columns({ types: ColumnType.TEXT })
   makeName?: string
   @Columns({ types: ColumnType.TEXT })
-  freezeModelsJson?: string
+  testModelsJson?: string
   @Columns({ types: ColumnType.TEXT })
   device?: string
   @Ignore()
-  freezeModels?: PidsModel[]
+  TestModels?: PidsModel[]
 
-  static clone(source: FreezeModel): FreezeModel {
-    let item = new FreezeModel()
+  static clone(source: TestModel): TestModel {
+    let item = new TestModel()
     item = source
-    item.freezeModels = JSON.parse(source.freezeModelsJson ?? "") as [PidsModel];
+    item.TestModels = JSON.parse(source.testModelsJson ?? "") as [PidsModel];
     return item
   }
 }

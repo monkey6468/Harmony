@@ -23,8 +23,9 @@ export class DBManger {
       })
   }
 
-  static delete(model: object, cls: object) {
-    CJDBUtil.delete(Object(cls).name, [
+  static delete(model: object) {
+    const className = model.constructor.name
+    CJDBUtil.delete(className, [
       new Condition('id', OperatorType.EQUAL_TO, `${(Object(model)).id}`)
     ])
       .then(results => {
@@ -35,8 +36,9 @@ export class DBManger {
       })
   }
 
-  static update(model: object, cls: object) {
-    CJDBUtil.update(Object(cls).name, model, [
+  static update(model: object) {
+    const className = model.constructor.name
+    CJDBUtil.update(className, model, [
       new Condition('id', OperatorType.EQUAL_TO, `${(Object(model)).id}`)
     ])
       .then(ids => {
@@ -59,7 +61,6 @@ export class DBManger {
 
   static cleanData(cls: object) {
     let sql = `DELETE FROM ${Object(cls).name}`
-    console.info(TAG, "dropTable", sql)
     CJDBUtil.executeSql(sql, [])
       .then(() => {
         console.info(TAG, "清除数据成功")
