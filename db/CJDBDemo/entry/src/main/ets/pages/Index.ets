@@ -51,7 +51,7 @@ struct freeze_container {
         .onClick(() => {
           let model: FreezeModel = new FreezeModel();
           model.id = 1
-          DBManger.delete(model)
+          DBManger.delete(TestModel, model)
         })
 
       Button("update")
@@ -60,7 +60,7 @@ struct freeze_container {
           model.id = 2
           model.makeName = 'John111';
           model.vin = "2544";
-          DBManger.update(model)
+          DBManger.update(TestModel, model)
         })
 
       Button("get all")
@@ -126,7 +126,7 @@ struct test_container {
         .onClick(() => {
           let model: TestModel = new TestModel();
           model.id = 1
-          DBManger.delete(model)
+          DBManger.delete(TestModel, model)
         })
 
       Button("update")
@@ -135,7 +135,7 @@ struct test_container {
           model.id = 2
           model.makeName = 'John111';
           model.vin = "2544";
-          DBManger.update(model)
+          DBManger.update(TestModel, model)
         })
 
       Button("get all")

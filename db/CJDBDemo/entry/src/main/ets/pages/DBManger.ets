@@ -23,9 +23,8 @@ export class DBManger {
       })
   }
 
-  static delete(model: object) {
-    const className = model.constructor.name
-    CJDBUtil.delete(className, [
+  static delete(cls: object, model: object) {
+    CJDBUtil.delete(Object(cls).name, [
       new Condition('id', OperatorType.EQUAL_TO, `${(Object(model)).id}`)
     ])
       .then(results => {
@@ -36,9 +35,8 @@ export class DBManger {
       })
   }
 
-  static update(model: object) {
-    const className = model.constructor.name
-    CJDBUtil.update(className, model, [
+  static update(cls: object, model: object) {
+    CJDBUtil.update(Object(cls).name, model, [
       new Condition('id', OperatorType.EQUAL_TO, `${(Object(model)).id}`)
     ])
       .then(ids => {
